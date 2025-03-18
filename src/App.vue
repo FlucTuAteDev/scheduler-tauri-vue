@@ -1,5 +1,5 @@
 <template>
 	<v-app>
-		<v-color-picker></v-color-picker>
+		<v-file-upload></v-file-upload>
 	</v-app>
 </template>
