@@ -7,7 +7,8 @@
 		"dev": "yarn concurrently \"yarn vue-devtools\" \"vite\"",
 		"build": "vue-tsc --noEmit && vite build",
 		"preview": "vite preview",
-		"tauri": "WEBKIT_DISABLE_DMABUF_RENDERER=1 tauri"
+		"tauri": "tauri",
+		"tauri-nvidia": "WEBKIT_DISABLE_DMABUF_RENDERER=1 tauri"
 	},
 	"dependencies": {
 		"@tauri-apps/api": "^2",
