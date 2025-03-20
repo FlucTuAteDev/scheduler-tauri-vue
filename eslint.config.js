@@ -5,7 +5,7 @@ import pluginVue from "eslint-plugin-vue";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
+export default tseslint.config(
 	{ files: ["**/*.{js,mjs,cjs,ts,vue}"] },
 	{
 		languageOptions: {
@@ -26,4 +26,14 @@ export default [
 		},
 	},
 	eslintConfigPrettier,
-];
+	{
+		rules: {
+			"@typescript-eslint/consistent-type-imports": [
+				"error",
+				{
+					fixStyle: "inline-type-imports",
+				},
+			],
+		},
+	},
+);
