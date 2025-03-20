@@ -17,5 +17,8 @@
 	},
 	"editor.formatOnSave": true,
 	"vue.complete.casing.tags": "kebab",
-	"editor.tabSize": 4
+	"editor.tabSize": 4,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	}
 }
