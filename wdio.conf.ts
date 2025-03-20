@@ -316,19 +316,7 @@ export const config: WebdriverIO.Config = {
 				}
 
 				console.log("Allure report successfully generated");
-				// TODO
-				if (process.env.CI) return resolve();
-
-				const allureOpen = allure(["open", "allure-report"]);
-				allureOpen.on("exit", function (exitCode: number) {
-					if (exitCode !== 0) {
-						return reject(
-							new Error("Could not open Allure report"),
-						);
-					}
-
-					resolve();
-				});
+				resolve();
 			});
 		});
 	},
