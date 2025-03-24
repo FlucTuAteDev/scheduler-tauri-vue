@@ -30,6 +30,11 @@ jobs:
         with:
           cache: "yarn" # uses the system node, which was updated prior.
 
+      # install our Node.js dependencies with Yarn
+      - name: Yarn install
+        run: yarn install --frozen-lockfile
+        # working-directory: webdriver/webdriverio
+
       # TODO: Move to separate job
       - name: Lint
         run: yarn lint
@@ -63,11 +68,6 @@ jobs:
       # we run our rust tests before the webdriver tests to avoid testing a broken application
       - name: Cargo test
         run: cargo test --manifest-path src-tauri/Cargo.toml
-
-      # install our Node.js dependencies with Yarn
-      - name: Yarn install
-        run: yarn install --frozen-lockfile
-        # working-directory: webdriver/webdriverio
 
       # install the latest version of `tauri-driver`.
       # note: the tauri-driver version is independent of any other Tauri versions
