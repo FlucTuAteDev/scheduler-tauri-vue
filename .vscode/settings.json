@@ -15,6 +15,9 @@
 	"[html]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
+	"[yaml]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	},
 	"editor.formatOnSave": true,
 	"vue.complete.casing.tags": "kebab",
 	"editor.tabSize": 4,
