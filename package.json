@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "yarn concurrently \"yarn vue-devtools\" \"vite\"",
+		"lint": "eslint src/ test/ ./*.{ts,js} && prettier --check src/ test/ ./*.{ts,js,json,html}",
 		"build": "vue-tsc --noEmit && vite build",
 		"preview": "vite preview",
 		"tauri": "NO_STRIP=true tauri",
