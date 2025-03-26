@@ -2,15 +2,46 @@
 on: [push]
 
 # the name of our workflow
-name: WebDriver
+name: Build and test
 
 jobs:
-  # a single job named test
-  test:
-    # the display name of the test job
-    name: WebDriverIO Test Runner
+  lint:
+    name: ESLint & Prettier
 
-    # we want to run on the latest linux environment
+    runs-on: ubuntu-22.04
+
+    steps:
+      # checkout the code on the workflow runner
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/workflows/install-frontend-deps
+
+      - name: Lint
+        run: yarn lint
+
+  build-linux:
+    name: Build (linux)
+    needs: lint
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      # checkout the code on the workflow runner
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/workflows/install-frontend-deps
+
+      - uses: ./.github/workflows/install-tauri-deps
+
+      - name: Build
+        run: yarn tauri build
+
+  # build-windows:
+
+  test-linux:
+    name: Build (linux)
+    needs: build-linux
+
     runs-on: ubuntu-22.04
 
     # the steps our job runs **in order**
@@ -18,30 +49,13 @@ jobs:
       # checkout the code on the workflow runner
       - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - uses: ./.github/workflows/install-frontend-deps
 
-      - run: corepack enable && corepack install # use the in-repo yarn version
-
-      - name: Setup Yarn in Node
-        uses: actions/setup-node@v4
-        with:
-          cache: "yarn" # uses the system node, which was updated prior.
-
-      # install our Node.js dependencies with Yarn
-      - name: Yarn install
-        run: yarn install --frozen-lockfile
-        # working-directory: webdriver/webdriverio
-
-      # TODO: Move to separate job
-      - name: Lint
-        run: yarn lint
+      - uses: ./.github/workflows/install-tauri-deps
 
       # install system dependencies that Tauri needs to compile on Linux.
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
-      - name: Tauri dependencies
+      - name: Test dependencies
         run: |
           sudo apt update && sudo apt install -y \
             libwebkit2gtk-4.1-dev \
@@ -55,19 +69,6 @@ jobs:
             librsvg2-dev \
             webkit2gtk-driver \
             xvfb
-
-      - name: Setup rust-toolchain stable
-        id: rust-toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: "./src-tauri -> target"
-
-      # we run our rust tests before the webdriver tests to avoid testing a broken application
-      - name: Cargo test
-        run: cargo test --manifest-path src-tauri/Cargo.toml
 
       # install the latest version of `tauri-driver`.
       # note: the tauri-driver version is independent of any other Tauri versions
