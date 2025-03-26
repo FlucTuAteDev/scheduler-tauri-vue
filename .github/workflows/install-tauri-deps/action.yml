@@ -15,7 +15,6 @@ runs:
     - name: Rust cache
       uses: swatinem/rust-cache@v2
       with:
-        shared-key: "tauri"
         workspaces: "./src-tauri -> target"
 
     - name: Install dependencies
