@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      # checkout the code on the workflow runner
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/install-frontend-deps
+      - name: Install frontend dependencies
+        uses: ./.github/workflows/install-frontend-deps
 
       - name: Lint
         run: yarn lint
@@ -26,12 +26,13 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      # checkout the code on the workflow runner
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/install-frontend-deps
+      - name: Install frontend dependencies
+        uses: ./.github/workflows/install-frontend-deps
 
-      - uses: ./.github/workflows/install-tauri-deps
+      - name: Install tauri dependencies
+        uses: ./.github/workflows/install-tauri-deps
 
       - name: Build
         run: yarn tauri build
@@ -39,19 +40,19 @@ jobs:
   # build-windows:
 
   test-linux:
-    name: Build (linux)
+    name: Test (linux)
     needs: build-linux
 
     runs-on: ubuntu-22.04
 
-    # the steps our job runs **in order**
     steps:
-      # checkout the code on the workflow runner
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/install-frontend-deps
+      - name: Install frontend dependencies
+        uses: ./.github/workflows/install-frontend-deps
 
-      - uses: ./.github/workflows/install-tauri-deps
+      - name: Install tauri dependencies
+        uses: ./.github/workflows/install-tauri-deps
 
       # install system dependencies that Tauri needs to compile on Linux.
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
@@ -79,7 +80,8 @@ jobs:
       # we run it through `xvfb-run` (the dependency we installed earlier) to have a fake
       # display server which allows our application to run headless without any changes to the code
       - name: WebdriverIO
-        run: xvfb-run yarn test
+        run: xvfb-run yarn test --no-build
+
         # working-directory: webdriver/webdriverio
 
       - name: Load test report history
