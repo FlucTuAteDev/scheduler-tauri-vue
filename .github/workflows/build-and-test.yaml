@@ -19,8 +19,8 @@ jobs:
       - name: Lint
         run: yarn lint
 
-  build-linux:
-    name: Build (linux)
+  build-and-test-linux:
+    name: Build & Test (linux)
     needs: lint
 
     runs-on: ubuntu-22.04
@@ -35,28 +35,11 @@ jobs:
         uses: ./.github/workflows/install-tauri-deps
 
       - name: Build
-        run: yarn tauri build
-
-  # build-windows:
-
-  test-linux:
-    name: Test (linux)
-    needs: build-linux
-
-    runs-on: ubuntu-22.04
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install frontend dependencies
-        uses: ./.github/workflows/install-frontend-deps
-
-      - name: Install tauri dependencies
-        uses: ./.github/workflows/install-tauri-deps
+        run: yarn tauri build --no-bundle
 
       # install system dependencies that Tauri needs to compile on Linux.
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
-      - name: Test dependencies
+      - name: Install test dependencies
         run: |
           sudo apt update && sudo apt install -y \
             libwebkit2gtk-4.1-dev \
