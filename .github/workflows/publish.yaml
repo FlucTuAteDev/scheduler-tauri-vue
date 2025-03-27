@@ -1,0 +1,46 @@
+name: 'publish'
+
+on:
+  push:
+    tags:
+      - 'app-v*'
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'ubuntu-22.04'
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install frontend dependencies
+        uses: ./.github/workflows/install-frontend-deps
+
+      - name: Install tauri dependencies
+        uses: ./.github/workflows/install-tauri-deps
+        with:
+          platform: ${{ matrix.platform }}
+        
+
+      - name: install frontend dependencies
+        run: yarn install
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'Scheduler v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
