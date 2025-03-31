@@ -5,9 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"dev": "yarn concurrently \"yarn vue-devtools\" \"vite\"",
+		"lint": "eslint src/ test/ ./*.{ts,js} && prettier --check src/ test/ ./*.{ts,js,json,html}",
 		"build": "vue-tsc --noEmit && vite build",
 		"preview": "vite preview",
-		"tauri": "NO_STRIP=true tauri",
+		"tauri": "tauri",
 		"tauri-nvidia": "WEBKIT_DISABLE_DMABUF_RENDERER=1 tauri",
 		"test": "wdio run ./wdio.conf.ts",
 		"test-serve": "yarn test && allure serve --port 45415"
@@ -15,6 +16,8 @@
 	"dependencies": {
 		"@tauri-apps/api": "^2",
 		"@tauri-apps/plugin-opener": "^2",
+		"@tauri-apps/plugin-process": "^2.2.0",
+		"@tauri-apps/plugin-updater": "~2",
 		"vue": "^3.5.13",
 		"vuetify": "^3.7.16"
 	},

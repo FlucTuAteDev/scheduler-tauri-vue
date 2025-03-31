@@ -1,0 +1,17 @@
+name: "Install frontend dependencies"
+description: "Sets up node and installs dependencies with yarn"
+runs:
+  using: "composite"
+
+  steps:
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: "yarn" # uses the system node, which was updated prior.
+
+    # install our Node.js dependencies with Yarn
+    - name: Yarn install
+      run: yarn install --frozen-lockfile
+      shell: bash
+      # working-directory: webdriver/webdriverio

@@ -1,0 +1,92 @@
+# run this action when the repository is pushed to
+on: [push]
+
+# the name of our workflow
+name: Build and test
+
+jobs:
+  lint:
+    name: ESLint & Prettier
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install frontend dependencies
+        uses: ./.github/workflows/install-frontend-deps
+
+      - name: Lint
+        run: yarn lint
+
+  build-and-test-linux:
+    name: Build & Test (linux)
+    needs: lint
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install frontend dependencies
+        uses: ./.github/workflows/install-frontend-deps
+
+      - name: Install tauri dependencies
+        uses: ./.github/workflows/install-tauri-deps
+
+      - name: Build
+        run: yarn tauri build --no-bundle
+
+      # install system dependencies that Tauri needs to compile on Linux.
+      # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
+      - name: Install test dependencies
+        run: |
+          sudo apt update && sudo apt install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            webkit2gtk-driver \
+            xvfb
+
+      # install the latest version of `tauri-driver`.
+      # note: the tauri-driver version is independent of any other Tauri versions
+      - name: Install tauri-driver
+        run: cargo install tauri-driver --locked
+
+      # run the WebdriverIO test suite.
+      # we run it through `xvfb-run` (the dependency we installed earlier) to have a fake
+      # display server which allows our application to run headless without any changes to the code
+      - name: WebdriverIO
+        run: xvfb-run yarn test --no-build
+
+        # working-directory: webdriver/webdriverio
+
+      - name: Load test report history
+        uses: actions/checkout@v3
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: test-results
+
+      - name: Build test report
+        uses: simple-elf/allure-report-action@v1.7
+        if: always()
+        with:
+          gh_pages: test-results
+          allure_history: allure-history
+          allure_results: allure-results
+
+      - name: Publish test report
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
