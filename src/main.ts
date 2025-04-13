@@ -1,22 +1,17 @@
-import { createApp } from "vue";
-
-// Vuetify
 import vuetify from "./plugins/vuetify";
-
-// Components
-import App from "./App.vue";
-
-// Devtools
+import { createApp } from "vue";
 import { devtools } from "@vue/devtools";
-
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
+
+import router from "./router";
+import App from "./App.vue";
 
 if (process.env.NODE_ENV === "development") {
 	devtools.connect();
 }
 
-createApp(App).use(vuetify).mount("#app");
+createApp(App).use(vuetify).use(router).mount("#app");
 
 const update = await check();
 if (update) {
