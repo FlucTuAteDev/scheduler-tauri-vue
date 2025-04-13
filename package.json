@@ -18,6 +18,7 @@
 		"@tauri-apps/plugin-opener": "^2",
 		"@tauri-apps/plugin-process": "^2.2.0",
 		"@tauri-apps/plugin-updater": "~2",
+		"pinia": "^3.0.2",
 		"vue": "^3.5.13",
 		"vue-router": "4",
 		"vuetify": "^3.7.16"
@@ -39,6 +40,7 @@
 		"eslint-plugin-vue": "^10.0.0",
 		"globals": "^16.0.0",
 		"prettier": "3.5.3",
+		"sass-embedded": "^1.86.3",
 		"tsx": "^4.19.3",
 		"typescript": "~5.6.2",
 		"typescript-eslint": "^8.26.1",
