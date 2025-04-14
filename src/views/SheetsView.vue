@@ -6,10 +6,8 @@
 import { computed, ref } from "vue";
 import { useSheetState } from "../state/store";
 
-import { formatRelative, format } from 'date-fns';
-import { hu } from 'date-fns/locale';
-
-
+import { formatRelative, format } from "date-fns";
+import { hu } from "date-fns/locale";
 
 // const { useState: useStaffState } = createNamespacedHelpers<Staff>(
 // 	store,
@@ -29,9 +27,13 @@ const recents = computed(() =>
 			<const>[
 				entry.path,
 				entry.year,
-				format(new Date(entry.year, entry.month), 'LLLL', { locale: hu }), // moment(entry.month + 1, "M", "HU").format("MMMM"),
-				entry.employeeCount, 
-				entry.modified ? formatRelative(entry.modified, new Date(), { locale: hu }) : undefined,
+				format(new Date(entry.year, entry.month), "LLLL", {
+					locale: hu,
+				}),
+				entry.employeeCount,
+				entry.modified
+					? formatRelative(entry.modified, new Date(), { locale: hu })
+					: undefined,
 				entry.path,
 			],
 	),
@@ -170,7 +172,7 @@ function reveal(path: string) {
 	display: grid;
 	position: relative;
 	align-items: center;
-	grid-template-rows: repeat(4, 1fr );
+	grid-template-rows: repeat(4, 1fr);
 	justify-content: center;
 	width: 200px;
 	height: 300px !important;
