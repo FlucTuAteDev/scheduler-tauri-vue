@@ -10,7 +10,7 @@ export const useSheetState = defineStore("sheet", () => {
 			employeeCount: 10,
 			modified: new Date(),
 			opened: new Date(),
-			path: "kekw",
+			path: "/etc/hosts",
 		},
 		{
 			year: 2021,
@@ -18,7 +18,7 @@ export const useSheetState = defineStore("sheet", () => {
 			employeeCount: 10,
 			modified: undefined,
 			opened: undefined,
-			path: "kekw",
+			path: "/etc/hosts",
 		},
 		{
 			year: 2022,
@@ -26,7 +26,7 @@ export const useSheetState = defineStore("sheet", () => {
 			employeeCount: 10,
 			modified: new Date(),
 			opened: new Date(),
-			path: "kekw",
+			path: "/etc/hosts",
 		},
 	]);
 	return {

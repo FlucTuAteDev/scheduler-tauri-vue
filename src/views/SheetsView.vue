@@ -5,6 +5,7 @@
 // import moment from "moment";
 import { computed, ref } from "vue";
 import { useSheetState } from "../state/store";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
 import { formatRelative, format } from "date-fns";
 import { hu } from "date-fns/locale";
@@ -44,10 +45,8 @@ const recents = computed(() =>
 // 	ipcRenderer.send("import", path);
 // }
 
-function reveal(path: string) {
-	console.log(path);
-
-	// ipcRenderer.send("reveal-in-explorer", path);
+async function reveal(path: string) {
+	await revealItemInDir(path);
 }
 
 // function newSheet() {
@@ -133,7 +132,8 @@ function reveal(path: string) {
 			<span class="filename">
 				<v-icon color="green">mdi-microsoft-excel</v-icon>
 				<br />
-				{{ filename }}
+				&lrm;{{ filename }}
+				<!-- HACK: left side ellipsis requires RTL text which does play nice with the "/" in the path, so &lrm; is added  -->
 			</span>
 			<span class="caption">
 				<v-icon color="secondary">mdi-account-multiple</v-icon>
@@ -189,13 +189,20 @@ function reveal(path: string) {
 		padding: 10px;
 		text-align: center;
 		max-width: 200px;
-		word-wrap: break-word;
+		// word-wrap: break-word;
+		white-space: nowrap;
+		overflow: hidden;
+
+		//ellipsis at the start https://stackoverflow.com/a/74455333
+		direction: rtl;
+		text-overflow: ellipsis;
 	}
 	.timeAgo {
 		display: flex;
 		gap: 5px;
 		text-align: left;
 		font-style: italic;
+		justify-content: center;
 	}
 }
 .new-sheet-button {
