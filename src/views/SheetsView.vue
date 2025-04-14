@@ -114,15 +114,14 @@ function reveal(path: string) {
 			] in recents"
 			:key="path"
 		>
-			<v-btn
-				fab
-				x-small
+			<v-fab
 				variant="plain"
 				class="reveal-in-explorer"
+				size="small"
 				@click.stop="reveal(path)"
+				icon="mdi-open-in-new"
 			>
-				<v-icon>mdi-open-in-new</v-icon>
-			</v-btn>
+			</v-fab>
 
 			<span class="font-weight-bold overline">
 				<v-icon color="info">mdi-calendar</v-icon>
@@ -168,11 +167,11 @@ function reveal(path: string) {
 .sheet {
 	border: 3px solid #ccc;
 	background: #fff;
-	display: flex;
+	display: grid;
 	position: relative;
 	align-items: center;
-	flex-direction: column;
-	justify-content: space-evenly;
+	grid-template-rows: repeat(4, 1fr );
+	justify-content: center;
 	width: 200px;
 	height: 300px !important;
 	gap: 5px;
@@ -203,6 +202,7 @@ function reveal(path: string) {
 .reveal-in-explorer {
 	top: 0;
 	right: 0;
+	max-height: max-content;
 	position: absolute;
 }
 .wrapper {
