@@ -16,8 +16,8 @@ export const useSheetState = defineStore("sheet", () => {
 			year: 2021,
 			month: 8,
 			employeeCount: 10,
-			modified: new Date(),
-			opened: new Date(),
+			modified: undefined,
+			opened: undefined,
 			path: "kekw",
 		},
 		{

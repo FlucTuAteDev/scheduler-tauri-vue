@@ -6,6 +6,11 @@
 import { computed, ref } from "vue";
 import { useSheetState } from "../state/store";
 
+import { formatRelative, format } from 'date-fns';
+import { hu } from 'date-fns/locale';
+
+
+
 // const { useState: useStaffState } = createNamespacedHelpers<Staff>(
 // 	store,
 // 	"staff",
@@ -24,9 +29,9 @@ const recents = computed(() =>
 			<const>[
 				entry.path,
 				entry.year,
-				entry.month, // moment(entry.month + 1, "M", "HU").format("MMMM"),
-				entry.employeeCount,
-				entry.modified, // moment(entry.modified).locale("HU").calendar(),
+				format(new Date(entry.year, entry.month), 'LLLL', { locale: hu }), // moment(entry.month + 1, "M", "HU").format("MMMM"),
+				entry.employeeCount, 
+				entry.modified ? formatRelative(entry.modified, new Date(), { locale: hu }) : undefined,
 				entry.path,
 			],
 	),
@@ -133,7 +138,7 @@ function reveal(path: string) {
 				<v-icon color="secondary">mdi-account-multiple</v-icon>
 				{{ numEmployees }} dolgozó
 			</span>
-			<div class="timeAgo caption">
+			<div class="timeAgo caption" v-if="timeAgo">
 				<v-icon>mdi-file-clock-outline</v-icon>
 				<span>
 					Módosítva: <br />
