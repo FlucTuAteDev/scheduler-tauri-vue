@@ -16,9 +16,7 @@ createApp(App).use(vuetify).use(router).use(pinia).mount("#app");
 
 const update = await check();
 if (update) {
-	console.log(
-		`found update ${update.version} from ${update.date} with notes ${update.body}`,
-	);
+	console.log(`found update ${update.version} from ${update.date} with notes ${update.body}`);
 	let downloaded = 0;
 	let contentLength = 0;
 	// alternatively we could also call update.download() and update.install() separately
@@ -26,9 +24,7 @@ if (update) {
 		switch (event.event) {
 			case "Started":
 				contentLength = event.data.contentLength ?? 0;
-				console.log(
-					`started downloading ${event.data.contentLength} bytes`,
-				);
+				console.log(`started downloading ${event.data.contentLength} bytes`);
 				break;
 			case "Progress":
 				downloaded += event.data.chunkLength;

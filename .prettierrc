@@ -2,5 +2,6 @@
 	"tabWidth": 4,
 	"useTabs": true,
 	"quoteProps": "consistent",
-	"arrowParens": "avoid"
+	"arrowParens": "avoid",
+	"printWidth": 100
 }

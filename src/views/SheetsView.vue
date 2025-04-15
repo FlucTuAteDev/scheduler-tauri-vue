@@ -105,14 +105,7 @@ async function reveal(path: string) {
 		<button
 			v-ripple
 			class="sheet"
-			v-for="[
-				filename,
-				year,
-				month,
-				numEmployees,
-				timeAgo,
-				path,
-			] in recents"
+			v-for="[filename, year, month, numEmployees, timeAgo, path] in recents"
 			:key="path"
 		>
 			<v-fab
@@ -149,11 +142,7 @@ async function reveal(path: string) {
 		</button>
 	</div>
 	<div class="pt-10 text-center" v-else>
-		<v-progress-circular
-			indeterminate
-			color="grey"
-			:size="50"
-		></v-progress-circular>
+		<v-progress-circular indeterminate color="grey" :size="50"></v-progress-circular>
 	</div>
 </template>
 

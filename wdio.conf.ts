@@ -197,11 +197,9 @@ export const config: WebdriverIO.Config = {
 	 * @param {string} cid worker id (e.g. 0-0)
 	 */
 	beforeSession: function () {
-		tauriDriver = spawn(
-			path.resolve(os.homedir(), ".cargo", "bin", "tauri-driver"),
-			[],
-			{ stdio: [null, process.stdout, process.stderr] },
-		);
+		tauriDriver = spawn(path.resolve(os.homedir(), ".cargo", "bin", "tauri-driver"), [], {
+			stdio: [null, process.stdout, process.stderr],
+		});
 	},
 	/**
 	 * Gets executed before test execution begins. At this point you can access to all global

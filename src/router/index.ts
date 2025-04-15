@@ -1,8 +1,4 @@
-import {
-	createMemoryHistory,
-	createRouter,
-	type RouteRecordRaw,
-} from "vue-router";
+import { createMemoryHistory, createRouter, type RouteRecordRaw } from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
 import SheetsView from "../views/SheetsView.vue";
