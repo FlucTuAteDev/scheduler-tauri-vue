@@ -38,8 +38,8 @@ const routes = [
 					v-for="[name, route, icon] in routes"
 					:key="route"
 					outlined
-					@click="$router.push(route)"
 					:disabled="$router.currentRoute.value.path == route"
+					@click="$router.push(route)"
 				>
 					<v-icon class="navbar-icon">{{ icon }}</v-icon>
 					{{ name }}

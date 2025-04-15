@@ -61,7 +61,7 @@ async function reveal(path: string) {
 </script>
 
 <template>
-	<div class="wrapper" v-if="!loading">
+	<div v-if="!loading" class="wrapper">
 		<!-- <v-dialog v-model="newSheetDialog" width="unset" height="80%">
 			<template v-slot:activator="{ on, attrs }">
 				<div class="sheet new-sheet-button" v-bind="attrs" v-on="on">
@@ -103,17 +103,17 @@ async function reveal(path: string) {
 		</v-dialog> -->
 		<!-- @click="importRecentSheet(path)" -->
 		<button
-			v-ripple
-			class="sheet"
 			v-for="[filename, year, month, numEmployees, timeAgo, path] in recents"
 			:key="path"
+			v-ripple
+			class="sheet"
 		>
 			<v-fab
 				variant="plain"
 				class="reveal-in-explorer"
 				size="small"
-				@click.stop="reveal(path)"
 				icon="mdi-open-in-new"
+				@click.stop="reveal(path)"
 			>
 			</v-fab>
 
@@ -132,7 +132,7 @@ async function reveal(path: string) {
 				<v-icon color="secondary">mdi-account-multiple</v-icon>
 				{{ numEmployees }} dolgozó
 			</span>
-			<div class="timeAgo caption" v-if="timeAgo">
+			<div v-if="timeAgo" class="timeAgo caption">
 				<v-icon>mdi-file-clock-outline</v-icon>
 				<span>
 					Módosítva: <br />
@@ -141,7 +141,7 @@ async function reveal(path: string) {
 			</div>
 		</button>
 	</div>
-	<div class="pt-10 text-center" v-else>
+	<div v-else class="pt-10 text-center">
 		<v-progress-circular indeterminate color="grey" :size="50"></v-progress-circular>
 	</div>
 </template>

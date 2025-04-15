@@ -16,7 +16,7 @@ export default tseslint.config(
 	},
 	pluginJs.configs.recommended,
 	...tseslint.configs.recommended,
-	...pluginVue.configs["flat/essential"],
+	...pluginVue.configs["flat/recommended"],
 	{
 		files: ["**/*.vue"],
 		languageOptions: {
@@ -33,6 +33,10 @@ export default tseslint.config(
 				{
 					fixStyle: "inline-type-imports",
 				},
+			],
+			"@typescript-eslint/naming-convention": [
+				"error",
+				{ selector: "objectLiteralProperty", format: null },
 			],
 		},
 	},
