@@ -18,18 +18,18 @@ function undo() {
 		<template #prepend>
 			<v-divider vertical></v-divider>
 
-			<TooltipButton tooltip="Beosztásban szereplő dolgozók" variant="flat" color="success">
+			<tooltip-button tooltip="Beosztásban szereplő dolgozók" variant="flat" color="success">
 				<v-icon>mdi-account-multiple</v-icon>
-			</TooltipButton>
-			<TooltipButton tooltip="Gyorsdolgozó" icon="mdi-plus" />
+			</tooltip-button>
+			<tooltip-button tooltip="Gyorsdolgozó" icon="mdi-plus" />
 			<v-divider vertical></v-divider>
 
-			<TooltipButton tooltip="Visszavonás" icon="mdi-undo" @click="undo" />
-			<TooltipButton tooltip="Újra" icon="mdi-redo" />
+			<tooltip-button tooltip="Visszavonás" icon="mdi-undo" @click="undo" />
+			<tooltip-button tooltip="Újra" icon="mdi-redo" />
 			<v-divider vertical></v-divider>
 
-			<TooltipButton tooltip="Fájl megnyitása" icon="mdi-folder-open" />
-			<TooltipButton tooltip="Mentés" icon="mdi-floppy" />
+			<tooltip-button tooltip="Fájl megnyitása" icon="mdi-folder-open" />
+			<tooltip-button tooltip="Mentés" icon="mdi-floppy" />
 
 			<v-divider vertical></v-divider>
 			<!-- <template v-for="(info, i) in toolbarInfo">

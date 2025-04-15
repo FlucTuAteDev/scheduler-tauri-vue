@@ -24,6 +24,7 @@ export default tseslint.config(
 				parser: tseslint.parser,
 			},
 		},
+		rules: {},
 	},
 	eslintConfigPrettier,
 	{
@@ -37,6 +38,18 @@ export default tseslint.config(
 			"@typescript-eslint/naming-convention": [
 				"error",
 				{ selector: "objectLiteralProperty", format: null },
+			],
+		},
+	},
+	{
+		rules: {
+			"vue/component-name-in-template-casing": [
+				"error",
+				"kebab-case",
+				{
+					registeredComponentsOnly: false,
+					ignores: [],
+				},
 			],
 		},
 	},
