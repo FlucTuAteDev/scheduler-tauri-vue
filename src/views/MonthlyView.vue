@@ -1,5 +1,20 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import TooltipButton from "../components/TooltipButton.vue";
+import { useSheetState } from "../state/store";
+import { format, getYear } from "date-fns";
+import { hu } from "date-fns/locale";
+import { DayOfWeek, daysOfWeekInMonth, workhoursInMonth } from "../utils/date";
+
+const sheetState = useSheetState();
+const sheet = sheetState.activeSheet;
+
+const toolbarInfo = computed(() => [
+	`${getYear(sheet.date)}. ${format(sheet.date, "LLLL", { locale: hu })}`,
+	`Havi óraszám: ${workhoursInMonth(sheet.date)}`,
+	`SZ: ${daysOfWeekInMonth(sheet.date, DayOfWeek.SATURDAY)}`, // \xA0 -> non-breaking space
+	`P: ${daysOfWeekInMonth(sheet.date, DayOfWeek.SUNDAY)}`,
+]);
 
 function undo() {
 	console.log("undo");
@@ -32,14 +47,35 @@ function undo() {
 			<tooltip-button tooltip="Mentés" icon="mdi-floppy" />
 
 			<v-divider vertical></v-divider>
-			<!-- <template v-for="(info, i) in toolbarInfo">
-				<v-divider vertical :key="i + 'divider'"></v-divider>
-				<div class="overline toolbar-info" :key="i + 'info'">
-					{{ info }}
-				</div>
-			</template> -->
+		</template>
+
+		<template #append>
+			<div id="toolbar-info-container">
+				<template v-for="(info, i) in toolbarInfo" :key="i">
+					<v-divider vertical></v-divider>
+					<div class="text-overline toolbar-info">
+						{{ info }}
+					</div>
+				</template>
+			</div>
 		</template>
 	</v-toolbar>
 </template>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+#toolbar-info-container {
+	display: flex;
+	align-items: center;
+
+	gap: 15px;
+	padding-inline: 15px;
+
+	height: 100%;
+}
+
+.toolbar-info {
+	line-height: 1.2rem;
+	text-align: center;
+	min-width: fit-content;
+}
+</style>
