@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import TooltipButton from "@components/TooltipButton.vue";
+import TooltipButton from "@/components/TooltipButton.vue";
 import { useSheetState } from "@/state/store";
 import { format, getYear } from "date-fns";
 import { hu } from "date-fns/locale";
