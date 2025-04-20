@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import TooltipButton from "@/components/TooltipButton.vue";
+import TextTooltipButton from "@/components/buttons/TextTooltipButton.vue";
 import { useSheetState } from "@/state/store";
 import { format, getYear } from "date-fns";
 import { hu } from "date-fns/locale";
 import { DayOfWeek, daysOfWeekInMonth, workhoursInMonth } from "@/utils/date";
 import { useStaffState } from "@/state/staff";
 import MonthlyRow from "@/components/MonthlyRow.vue";
+import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipButton.vue";
 
 const sheetState = useSheetState();
 const sheet = sheetState.activeSheet;
@@ -42,18 +43,31 @@ function quickAddEmployee() {
 		<template #prepend>
 			<v-divider vertical></v-divider>
 
-			<tooltip-button tooltip="Beosztásban szereplő dolgozók" variant="flat" color="success">
+			<text-tooltip-button
+				tooltip="Beosztásban szereplő dolgozók"
+				variant="flat"
+				color="success"
+			>
 				<v-icon>mdi-account-multiple</v-icon>
-			</tooltip-button>
-			<tooltip-button tooltip="Gyorsdolgozó" icon="mdi-plus" @click="quickAddEmployee" />
+			</text-tooltip-button>
+			<text-tooltip-button tooltip="Gyorsdolgozó" icon="mdi-plus" @click="quickAddEmployee" />
 			<v-divider vertical></v-divider>
 
-			<tooltip-button tooltip="Visszavonás" icon="mdi-undo" @click="undo" />
-			<tooltip-button tooltip="Újra" icon="mdi-redo" />
+			<accelerated-tooltip-button
+				tooltip="Visszavonás"
+				icon="mdi-undo"
+				accelerator="ctrl+z"
+				@click="undo"
+			/>
+			<accelerated-tooltip-button
+				tooltip="Újra"
+				icon="mdi-redo"
+				:accelerator="['ctrl+y', 'ctrl+shift+z']"
+			/>
 			<v-divider vertical></v-divider>
 
-			<tooltip-button tooltip="Fájl megnyitása" icon="mdi-folder-open" />
-			<tooltip-button tooltip="Mentés" icon="mdi-floppy" />
+			<text-tooltip-button tooltip="Fájl megnyitása" icon="mdi-folder-open" />
+			<text-tooltip-button tooltip="Mentés" icon="mdi-floppy" />
 
 			<v-divider vertical></v-divider>
 		</template>
