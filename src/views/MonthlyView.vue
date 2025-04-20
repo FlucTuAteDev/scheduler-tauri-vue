@@ -131,6 +131,11 @@ function quickAddEmployee() {
 </template>
 
 <style lang="css" scoped>
+.names-header {
+	min-width: 10em;
+	border-right-style: double;
+}
+
 #toolbar-info-container {
 	display: flex;
 	align-items: center;
@@ -153,5 +158,39 @@ function quickAddEmployee() {
 	border: 1px solid #eee;
 	scroll-behavior: smooth;
 	max-height: calc(100vh - 136px);
+}
+</style>
+
+<style lang="scss">
+.table {
+	position: relative;
+	border-collapse: separate;
+	table-layout: fixed;
+	user-select: none;
+	border-spacing: 0;
+
+	thead th {
+		position: sticky;
+		top: 0;
+		background: #000;
+		color: #fff;
+		z-index: 1;
+		height: 3em;
+
+		&:hover {
+			filter: invert(15%);
+		}
+		&:first-child {
+			left: 0;
+			z-index: 2;
+		}
+	}
+
+	tbody th {
+		position: sticky;
+		left: 0;
+		background: #fff;
+		border: 1px solid #ccc;
+	}
 }
 </style>
