@@ -44,7 +44,7 @@ function getKeyCombination(e: KeyboardEvent) {
 	const pressedModifierKeys = [e.ctrlKey, e.altKey, e.shiftKey];
 
 	return (
-		modifierKeyNames.filter((key, index) => pressedModifierKeys[index]).join("+") +
+		modifierKeyNames.filter((_, index) => pressedModifierKeys[index]).join("+") +
 		`+${e.key.toLowerCase()}`
 	);
 }
