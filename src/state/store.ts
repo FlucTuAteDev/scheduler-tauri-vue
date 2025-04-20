@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Sheet, type RecentSheetInfo } from "../model/schedule-sheet";
+import { Sheet, type RecentSheetInfo } from "@/model/schedule-sheet";
 import { type Reactive, reactive } from "vue";
 
 // export class SheetState {

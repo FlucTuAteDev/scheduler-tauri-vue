@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import TooltipButton from "../components/TooltipButton.vue";
-import { useSheetState } from "../state/store";
+import TooltipButton from "@components/TooltipButton.vue";
+import { useSheetState } from "@/state/store";
 import { format, getYear } from "date-fns";
 import { hu } from "date-fns/locale";
-import { DayOfWeek, daysOfWeekInMonth, workhoursInMonth } from "../utils/date";
+import { DayOfWeek, daysOfWeekInMonth, workhoursInMonth } from "@/utils/date";
 
 const sheetState = useSheetState();
 const sheet = sheetState.activeSheet;

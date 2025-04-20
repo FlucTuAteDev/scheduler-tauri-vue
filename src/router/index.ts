@@ -1,7 +1,7 @@
 import { createMemoryHistory, createRouter, type RouteRecordRaw } from "vue-router";
 
-import SheetsView from "../views/SheetsView.vue";
-import MonthlyView from "../views/MonthlyView.vue";
+import SheetsView from "@/views/SheetsView.vue";
+import MonthlyView from "@/views/MonthlyView.vue";
 
 const routes: RouteRecordRaw[] = [
 	{

@@ -1,4 +1,4 @@
-import { DayOfWeek, daysOfWeekInMonth, workhoursInMonth } from "../../src/utils/date";
+import { DayOfWeek, daysOfWeekInMonth, workhoursInMonth } from "@/utils/date";
 import { expect } from "@wdio/globals";
 
 describe("Date util functions", () => {

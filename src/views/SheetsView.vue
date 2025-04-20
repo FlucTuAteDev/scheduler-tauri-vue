@@ -4,7 +4,7 @@
 // import EmployeeTable from "@/components/staff/EmployeePickerTable.vue";
 // import moment from "moment";
 import { computed, ref } from "vue";
-import { useSheetState } from "../state/store";
+import { useSheetState } from "@/state/store";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
 import { formatRelative, format } from "date-fns";
