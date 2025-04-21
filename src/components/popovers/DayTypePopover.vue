@@ -50,6 +50,8 @@ function setShift(newShift: Shift, newBatch: boolean = false) {
 
 	emit("set-shift", shift.value);
 	last_action.value = "set-shift";
+
+	console.log("set-shift", shift.value);
 }
 
 function setType(dayType: DayType) {
@@ -57,6 +59,8 @@ function setType(dayType: DayType) {
 	emit("set-day-type", dayType);
 
 	last_action.value = "set-type";
+
+	console.log("set-day-type", dayType);
 }
 
 function createNewBatch() {
@@ -138,7 +142,7 @@ watch(() => selectionElements, createNewBatch);
 				<shift-picker :focus="model" @input="setShift"> </shift-picker>
 
 				<accelerated-tooltip-button
-					:type="0"
+					:type="DayType.shift"
 					tooltip="Műszak"
 					accelerator="Enter"
 					@click="setShift(shift, true)"
@@ -146,7 +150,7 @@ watch(() => selectionElements, createNewBatch);
 					<v-icon>mdi-set-split</v-icon>
 				</accelerated-tooltip-button>
 				<accelerated-tooltip-button
-					:type="8"
+					:type="DayType.empty"
 					dark
 					tooltip="Törlés"
 					color="red"
@@ -165,6 +169,9 @@ watch(() => selectionElements, createNewBatch);
 					:accelerator="accelerators[i]"
 					:tooltip="DayTypeDescriptions[dayType].desc"
 					:color="DayTypeDescriptions[dayType].color"
+					rounded="circle"
+					width="4rem"
+					height="4rem"
 					@click="setType(dayType)"
 				>
 					{{ DayTypeDescriptions[dayType].label }}
