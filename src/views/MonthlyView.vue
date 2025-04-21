@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 import TextTooltipButton from "@/components/buttons/TextTooltipButton.vue";
 import { useSheetState } from "@/state/store";
 import { format, getYear } from "date-fns";
@@ -8,6 +8,7 @@ import { DayOfWeek, daysOfWeekInMonth, workhoursInMonth } from "@/utils/date";
 import { useStaffState } from "@/state/staff";
 import MonthlyRow from "@/components/MonthlyRow.vue";
 import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipButton.vue";
+import DayTypePopover from "@/components/popovers/DayTypePopover.vue";
 
 const sheetState = useSheetState();
 const sheet = sheetState.activeSheet;
@@ -23,6 +24,8 @@ const toolbarInfo = computed(() => [
 
 function undo() {
 	console.log("undo");
+
+	getDayElement(0, 1);
 }
 
 function quickAddEmployee() {
@@ -36,6 +39,33 @@ function quickAddEmployee() {
 
 // let canUndo = true;
 // let canRedo = false;
+
+const popover = ref(true);
+const monthlyRows = useTemplateRef("schedule-rows");
+function getDayElement(employeeIndex: number, day: number): Element | void {
+	// let employeeId = sheet.schedule[index]?.employee.id;
+
+	if (!monthlyRows.value) return console.error(`Could not find monthlyRows ref`);
+
+	// console.log(monthlyRows.value?.find(row => row?.$props.row.employee));
+	const dayElement = monthlyRows.value[employeeIndex]?.$el?.children[day];
+
+	if (!dayElement) return console.error(`Could not find element ${employeeIndex}:${day}`);
+
+	console.log(dayElement);
+
+	// let currDay = monthlyRows.value[index]?.$el. .find(e => {
+	// 	// console.log(e.$props.day)
+	// 	if (!e.$props.day) throw `Az '${name}' sornak nincsenek leszármazottjai`;
+
+	// 	return e.$props.day == day;
+	// });
+	// if (!currDay) throw `Nem sikerült megtalálni ${day}. oszlopot.`;
+
+	// return currDay.$el;
+
+	return day as unknown as Element;
+}
 </script>
 
 <template>
@@ -84,6 +114,13 @@ function quickAddEmployee() {
 		</template>
 	</v-toolbar>
 
+	<!-- 			@close="deselect" 
+							@set-shift="setShift"
+			@set-type="setType
+			:selection-elements="selection_elements"	-->
+
+	<day-type-popover ref="base" v-model="popover" />
+
 	<div v-if="sheet.schedule.length > 0" id="table-wrapper" ref="table_wrapper" class="ma-1">
 		<table class="table">
 			<thead>
@@ -120,7 +157,7 @@ function quickAddEmployee() {
 				<monthly-row
 					v-for="row in sheet.schedule"
 					:key="row.employee.id"
-					:ref="row.employee.id"
+					ref="schedule-rows"
 					v-bind="{ row }"
 				/>
 			</tbody>
