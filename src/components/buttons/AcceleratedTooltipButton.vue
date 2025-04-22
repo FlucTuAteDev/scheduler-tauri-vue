@@ -9,7 +9,7 @@ const { tooltip, accelerator: acceleratorProp } = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	click: [];
+	click: [InputEvent?];
 }>();
 
 onMounted(() => {
@@ -35,18 +35,18 @@ const keybinds = computed(() =>
 	),
 );
 
-function click() {
-	emit("click");
+function click(event?: InputEvent) {
+	emit("click", event);
 }
 
 function getKeyCombination(e: KeyboardEvent) {
 	const modifierKeyNames = ["ctrl", "alt", "shift"];
 	const pressedModifierKeys = [e.ctrlKey, e.altKey, e.shiftKey];
 
-	return (
-		modifierKeyNames.filter((_, index) => pressedModifierKeys[index]).join("+") +
-		`+${e.key.toLowerCase()}`
-	);
+	return [
+		...modifierKeyNames.filter((_, index) => pressedModifierKeys[index]),
+		e.key.toLowerCase(),
+	].join("+");
 }
 
 function keydown(e: KeyboardEvent) {
@@ -55,11 +55,12 @@ function keydown(e: KeyboardEvent) {
 	) {
 		click();
 	}
+	// console.log(e, getKeyCombination(e));
 }
 </script>
 
 <template>
-	<base-tooltip-button>
+	<base-tooltip-button @click="$emit('click', $event)">
 		<template #tooltip>
 			<div id="tooltip-container">
 				<span>{{ tooltip }}</span>
