@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { DayType, DayTypeDescriptions } from "@/model/day-types";
+import { DayType } from "@/model/day-types";
 import ShiftPicker, { type Shift } from "@/components/pickers/ShiftPicker.vue";
 import BasePopover from "@/components/popovers/BasePopover.vue";
 import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipButton.vue";
 import { type Ref, ref, watch } from "vue";
+import SetDayTypeButton from "../buttons/SetDayTypeButton.vue";
 
 // interface LeaveButtonData {
 // 	type: string;
@@ -126,8 +127,7 @@ watch(() => selectionElements, createNewBatch);
 					@click="pinned = !pinned"
 				/>
 				<accelerated-tooltip-button
-					variant="
-					plain"
+					variant="plain"
 					color="secondary"
 					size="small"
 					elevation="0"
@@ -161,21 +161,13 @@ watch(() => selectionElements, createNewBatch);
 				</accelerated-tooltip-button>
 			</div>
 			<div class="lower">
-				<accelerated-tooltip-button
+				<set-day-type-button
 					v-for="(dayType, i) in dayTypeButtons"
 					:key="dayType"
-					dark
-					:type="dayType"
+					:day-type="dayType"
 					:accelerator="accelerators[i]"
-					:tooltip="DayTypeDescriptions[dayType].desc"
-					:color="DayTypeDescriptions[dayType].color"
-					rounded="circle"
-					width="4rem"
-					height="4rem"
 					@click="setType(dayType)"
-				>
-					{{ DayTypeDescriptions[dayType].label }}
-				</accelerated-tooltip-button>
+				/>
 			</div>
 		</v-card>
 	</base-popover>
