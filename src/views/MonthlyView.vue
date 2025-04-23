@@ -11,6 +11,8 @@ import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipBut
 import DayTypePopover from "@/components/popovers/DayTypePopover.vue";
 import { useDragState } from "@/composables/dragSelection";
 import { throttle } from "lodash";
+import { type DayType } from "@/model/day-types";
+import { type Shift } from "@/components/pickers/ShiftPicker.vue";
 
 const sheetState = useSheetState();
 const sheet = sheetState.activeSheet;
@@ -44,7 +46,7 @@ function quickAddEmployee() {
 
 const popoverVisible = ref(false);
 //FIXME: https://vuejs.org/guide/essentials/template-refs states: "It should be noted that the ref array does not guarantee the same order as the source array."
-const monthlyRows = useTemplateRef("schedule-rows");
+const monthlyRowsRef = useTemplateRef("schedule-rows");
 
 function arrowKeyDown(e: KeyboardEvent) {
 	const bindings = {
@@ -71,13 +73,13 @@ onUnmounted(() => window.removeEventListener("keydown", arrowKeyDownThrottled));
 function getDayElement(employeeIndex: number, day: number): Element | undefined {
 	// let employeeId = sheet.schedule[index]?.employee.id;
 
-	if (!monthlyRows.value) {
+	if (!monthlyRowsRef.value) {
 		console.error(`Could not find monthlyRows ref`);
 		return undefined;
 	}
 
 	// console.log(monthlyRows.value?.find(row => row?.$props.row.employee));
-	const dayElement = monthlyRows.value[employeeIndex]?.$el?.children[day];
+	const dayElement = monthlyRowsRef.value[employeeIndex]?.$el?.children[day];
 
 	if (!dayElement) {
 		console.error(`Could not find element ${employeeIndex}:${day}`);
@@ -96,9 +98,27 @@ const selectionElements = computed(() =>
 		.map(day => getDayElement(drag.employeeIndex, day))
 		.filter(el => el != undefined),
 );
+
+const selectedScheduleDays = computed(() =>
+	selection.value.map(day => sheet.schedule[drag.employeeIndex].getDay(day)),
+);
 // const cursorElement = computed(() =>
 // 	drag.end > 0 ? getDayElement(drag.employeeIndex, drag.end) : undefined,
 // );
+
+function setShift(shift: Shift) {
+	if (!drag.selectionActive) return;
+	for (const day of selectedScheduleDays.value) {
+		day.setShift(shift.start, shift.duration);
+	}
+}
+
+function setDayType(dayType: DayType) {
+	if (!drag.selectionActive) return;
+	for (const day of selectedScheduleDays.value) {
+		day.setType(dayType);
+	}
+}
 </script>
 
 <template>
@@ -148,14 +168,15 @@ const selectionElements = computed(() =>
 	</v-toolbar>
 
 	<!-- 			@close="deselect" 
-							@set-shift="setShift"
-			@set-type="setType	-->
+							-->
 
 	<day-type-popover
 		ref="base"
 		v-model="popoverVisible"
 		:selection-elements="selectionElements"
 		@close="deselect"
+		@set-day-type="setDayType"
+		@set-shift="setShift"
 	/>
 
 	<div v-if="sheet.schedule.length > 0" id="table-wrapper" ref="table_wrapper" class="ma-1">
