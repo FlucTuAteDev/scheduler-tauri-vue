@@ -24,7 +24,9 @@ export default tseslint.config(
 				parser: tseslint.parser,
 			},
 		},
-		rules: {},
+		rules: {
+			"@typescript-eslint/no-unused-vars": "warn",
+		},
 	},
 	eslintConfigPrettier,
 	{
