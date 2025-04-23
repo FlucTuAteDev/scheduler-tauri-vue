@@ -4,7 +4,7 @@ import ShiftPicker, { type Shift } from "@/components/pickers/ShiftPicker.vue";
 import BasePopover from "@/components/popovers/BasePopover.vue";
 import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipButton.vue";
 import { type Ref, ref, watch } from "vue";
-import SetDayTypeButton from "../buttons/SetDayTypeButton.vue";
+import SetDayTypeButton from "@/components/buttons/SetDayTypeButton.vue";
 
 // interface LeaveButtonData {
 // 	type: string;
@@ -40,7 +40,7 @@ const dayTypeButtons: DayType[] = [
 ];
 
 const accelerators: string[] = ["f", "s", "p", "h", "t", "ü", "Delete", "Enter", "Escape"]; //Last three are used only in IgnoreKeys
-const pinned = ref(true);
+const pinned = ref(false);
 const last_action = ref(""); //TODO: restrict type?
 
 function setShift(newShift: Shift, newBatch: boolean = false) {

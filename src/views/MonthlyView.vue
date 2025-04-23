@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef, onUnmounted } from "vue";
 import TextTooltipButton from "@/components/buttons/TextTooltipButton.vue";
 import { useSheetState } from "@/state/store";
 import { format, getYear } from "date-fns";
@@ -9,6 +9,8 @@ import { useStaffState } from "@/state/staff";
 import MonthlyRow from "@/components/MonthlyRow.vue";
 import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipButton.vue";
 import DayTypePopover from "@/components/popovers/DayTypePopover.vue";
+import { useDragState } from "@/composables/dragSelection";
+import { throttle } from "lodash";
 
 const sheetState = useSheetState();
 const sheet = sheetState.activeSheet;
@@ -40,32 +42,63 @@ function quickAddEmployee() {
 // let canUndo = true;
 // let canRedo = false;
 
-const popover = ref(true);
+const popoverVisible = ref(false);
+//FIXME: https://vuejs.org/guide/essentials/template-refs states: "It should be noted that the ref array does not guarantee the same order as the source array."
 const monthlyRows = useTemplateRef("schedule-rows");
-function getDayElement(employeeIndex: number, day: number): Element | void {
+
+function arrowKeyDown(e: KeyboardEvent) {
+	const bindings = {
+		ArrowRight: [1, 0],
+		ArrowLeft: [-1, 0],
+		ArrowUp: [0, -1],
+		ArrowDown: [0, 1],
+	};
+	const bind = Object.entries(bindings).find(b => b[0] == e.key);
+	if (bind) {
+		const [dx, dy] = bind[1] as [number, number];
+		if (e.ctrlKey) {
+			// setTableScroll.value(dx * 40, dy * 40);
+		} else {
+			moveSelection(dx, dy, e);
+			// context.root.$nextTick(() => selection_tracker.scrollIntoView(selection_elements.value, setTableScroll.value));
+		}
+	}
+}
+let arrowKeyDownThrottled = throttle(arrowKeyDown, 100);
+window.addEventListener("keydown", arrowKeyDownThrottled);
+onUnmounted(() => window.removeEventListener("keydown", arrowKeyDownThrottled));
+
+function getDayElement(employeeIndex: number, day: number): Element | undefined {
 	// let employeeId = sheet.schedule[index]?.employee.id;
 
-	if (!monthlyRows.value) return console.error(`Could not find monthlyRows ref`);
+	if (!monthlyRows.value) {
+		console.error(`Could not find monthlyRows ref`);
+		return undefined;
+	}
 
 	// console.log(monthlyRows.value?.find(row => row?.$props.row.employee));
 	const dayElement = monthlyRows.value[employeeIndex]?.$el?.children[day];
 
-	if (!dayElement) return console.error(`Could not find element ${employeeIndex}:${day}`);
+	if (!dayElement) {
+		console.error(`Could not find element ${employeeIndex}:${day}`);
+		return undefined;
+	}
 
-	console.log(dayElement);
+	// console.log(dayElement);
 
-	// let currDay = monthlyRows.value[index]?.$el. .find(e => {
-	// 	// console.log(e.$props.day)
-	// 	if (!e.$props.day) throw `Az '${name}' sornak nincsenek leszármazottjai`;
-
-	// 	return e.$props.day == day;
-	// });
-	// if (!currDay) throw `Nem sikerült megtalálni ${day}. oszlopot.`;
-
-	// return currDay.$el;
-
-	return day as unknown as Element;
+	return dayElement;
 }
+
+const { drag, moveSelection, deselect, selection } = useDragState(sheet, popoverVisible);
+
+const selectionElements = computed(() =>
+	selection.value
+		.map(day => getDayElement(drag.employeeIndex, day))
+		.filter(el => el != undefined),
+);
+// const cursorElement = computed(() =>
+// 	drag.end > 0 ? getDayElement(drag.employeeIndex, drag.end) : undefined,
+// );
 </script>
 
 <template>
@@ -116,10 +149,14 @@ function getDayElement(employeeIndex: number, day: number): Element | void {
 
 	<!-- 			@close="deselect" 
 							@set-shift="setShift"
-			@set-type="setType
-			:selection-elements="selection_elements"	-->
+			@set-type="setType	-->
 
-	<day-type-popover ref="base" v-model="popover" />
+	<day-type-popover
+		ref="base"
+		v-model="popoverVisible"
+		:selection-elements="selectionElements"
+		@close="deselect"
+	/>
 
 	<div v-if="sheet.schedule.length > 0" id="table-wrapper" ref="table_wrapper" class="ma-1">
 		<table class="table">
@@ -155,9 +192,10 @@ function getDayElement(employeeIndex: number, day: number): Element | void {
 				@employee-contextmenu="employeeContextMenu($event, row.employee)"
 				v-bind="{ row, aggregates }" -->
 				<monthly-row
-					v-for="row in sheet.schedule"
+					v-for="(row, i) in sheet.schedule"
 					:key="row.employee.id"
 					ref="schedule-rows"
+					:selection="drag.selectionActive && i == drag.employeeIndex ? selection : []"
 					v-bind="{ row }"
 				/>
 			</tbody>

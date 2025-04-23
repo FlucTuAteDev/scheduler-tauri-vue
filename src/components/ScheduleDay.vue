@@ -5,9 +5,9 @@ import { type ScheduleDay } from "@/model/schedule-sheet";
 import { isMonday, isWeekend } from "date-fns";
 import { fontColorFromBackground } from "@/utils/color";
 
-const { scheduleDay } = defineProps<{
+const { scheduleDay, selection = [] } = defineProps<{
 	scheduleDay: ScheduleDay;
-	// selection: [],
+	selection?: number[];
 	// error_groups: ErrorGroup[],
 }>();
 
@@ -19,7 +19,7 @@ const classes = computed(() => {
 		{
 			// "has-warning": this.error_groups.some(x => !x.fatal),
 			// "has-error": this.error_groups.some(x => x.fatal),
-			// "selected": this.is_selected,
+			selected: is_selected(),
 			weekend: isWeekend(scheduleDay.date) /* || isHoliday(scheduleDay.date) */,
 			monday: isMonday(scheduleDay.date),
 			// "first": this.selection[0] == this.day,
@@ -37,9 +37,9 @@ const style = computed(() => {
 	return { backgroundColor: color, color: fontColorFromBackground(color) };
 });
 
-// is_selected(): boolean {
-// 	return this.selection.includes(this.day);
-// },
+function is_selected(): boolean {
+	return selection.includes(scheduleDay.day);
+}
 </script>
 
 <template>

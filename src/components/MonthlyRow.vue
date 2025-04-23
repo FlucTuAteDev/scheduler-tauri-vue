@@ -5,7 +5,7 @@ import { type ScheduleRow } from "@/model/schedule-sheet";
 
 const props = defineProps<{
 	row: ScheduleRow;
-	// selection: [],
+	selection: number[];
 	// error_groups: ErrorGroup[],
 	// aggregates: Aggregate[],
 }>();
@@ -48,11 +48,12 @@ const employeeName = computed(() => props.row.employee.name);
 			{{ employeeName }}
 		</th>
 		<!-- :error_groups="error_groups.filter(x => x.days.includes(index))" :duration="data.duration"
-		:start="data.start" :selection="selection" :type="data.type" -->
+		:start="data.start" :type="data.type" -->
 		<schedule-day-component
 			v-for="scheduleDay in days"
 			:key="scheduleDay.day"
 			:schedule-day="scheduleDay"
+			:selection="selection"
 			@mousedown.left.prevent.stop="down(scheduleDay.day)"
 			@mouseup.left.stop="up(scheduleDay.day)"
 			@mouseenter="enter(scheduleDay.day)"

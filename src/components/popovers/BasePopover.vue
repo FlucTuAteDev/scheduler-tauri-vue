@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onUnmounted, reactive, ref, watch } from "vue";
+import { computed, nextTick, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue";
 import _ from "lodash";
 
 const model = defineModel<boolean>();
@@ -30,13 +30,13 @@ let updateRects = () => {
 	targetEndRect.value = _.last(targets)!.getBoundingClientRect();
 };
 
-const popover = ref(); // Template ref to popover
+const popoverRef = useTemplateRef("popover"); // Template ref to popover
 
 let popoverWidth = ref(100);
 let popoverHeight = ref(100);
 
 let updateDimensions = () => {
-	let rect = popover.value?.getBoundingClientRect();
+	let rect = popoverRef.value?.getBoundingClientRect();
 	popoverWidth.value = rect?.width ?? 0;
 	popoverHeight.value = rect?.height ?? 0;
 };
@@ -81,8 +81,8 @@ let firstChange = true;
 watch(
 	() => absolute,
 	() => {
-		if (firstChange) {
-			let rect: DOMRect = popover.value?.getBoundingClientRect();
+		if (firstChange && popoverRef.value) {
+			let rect: DOMRect = popoverRef.value?.getBoundingClientRect();
 			position.x = rect.x;
 			position.y = rect.y;
 			firstChange = false;
@@ -108,9 +108,10 @@ let drag = {
 
 let dragStart = (e: MouseEvent) => {
 	drag.dragging = true;
-	let rect: DOMRect = popover.value?.getBoundingClientRect();
-	drag.offset.x = e.x - rect.x;
-	drag.offset.y = e.y - rect.y;
+	//FIXME popover ref is sometimes null here?
+	let rect = popoverRef.value?.getBoundingClientRect();
+	drag.offset.x = e.x - (rect?.x ?? 0);
+	drag.offset.y = e.y - (rect?.y ?? 0);
 };
 
 let mousemove = (e: MouseEvent) => {
