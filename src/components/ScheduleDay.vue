@@ -23,8 +23,8 @@ const classes = computed(() => {
 			selected: is_selected(),
 			weekend: isWeekend(scheduleDay.date) /* || isHoliday(scheduleDay.date) */,
 			monday: isMonday(scheduleDay.date),
-			// "first": this.selection[0] == this.day,
-			// "last": this.selection[this.selection.length - 1] == this.day,
+			first: selection.selectionLeft == scheduleDay.day,
+			last: selection.selectionRight == scheduleDay.day,
 		},
 	];
 });
