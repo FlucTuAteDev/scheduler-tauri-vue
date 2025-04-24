@@ -1,13 +1,15 @@
 import { onUnmounted, type Reactive, reactive, type Ref } from "vue";
 import { clamp, range, throttle } from "lodash";
-import { type Sheet } from "@/model/schedule-sheet";
+import { type ScheduleDay, type Sheet } from "@/model/schedule-sheet";
 
-// TODO: optimize selectionState array getters with cache/computed (selectedDays, selectedScheduleDays etc...)
 export class SelectionState {
 	//The drag start and end are represented by day numbers (e.g 1...31) and are clamped by their setters to 1...monthLength
 	private _start = 0;
 	private _end = 0;
 	private _employeeIndex = 0;
+
+	private _selectedDaysCache: number[] | undefined;
+	private _selectedScheduleDaysCache: ScheduleDay[] | undefined;
 
 	active = false;
 	dragging = false;
@@ -19,6 +21,9 @@ export class SelectionState {
 	}
 	set start(value: number) {
 		this._start = clamp(value, 1, this.sheet.monthLength);
+
+		this._selectedDaysCache = undefined;
+		this._selectedScheduleDaysCache = undefined;
 	}
 
 	get end() {
@@ -26,6 +31,9 @@ export class SelectionState {
 	}
 	set end(value: number) {
 		this._end = clamp(value, 1, this.sheet.monthLength);
+
+		this._selectedDaysCache = undefined;
+		this._selectedScheduleDaysCache = undefined;
 	}
 
 	get employeeIndex() {
@@ -33,6 +41,7 @@ export class SelectionState {
 	}
 	set employeeIndex(value: number) {
 		this._employeeIndex = clamp(value, 0, this.sheet.schedule.length - 1);
+		this._selectedScheduleDaysCache = undefined;
 	}
 	get selectionLeft() {
 		return Math.min(this.start, this.end);
@@ -42,15 +51,20 @@ export class SelectionState {
 		return Math.max(this.start, this.end);
 	}
 
+	//E.g. (selectionLeft: 5, selectionRight: 7) => [5,6,7]
 	get selectedDays(): number[] {
-		//E.g. (selectionLeft: 5, selectionRight: 7) => [5,6,7]
-		if (this.selectionRight == 0) return [];
-		// console.log("selecteddays");
-		return range(this.selectionLeft, this.selectionRight + 1);
+		if (this._selectedDaysCache) return this._selectedDaysCache;
+
+		if (this.selectionRight == 0) return (this._selectedDaysCache = []);
+		return (this._selectedDaysCache = range(this.selectionLeft, this.selectionRight + 1));
 	}
 
 	get selectedScheduleDays() {
-		return this.selectedDays.map(day => this.sheet.schedule[this.employeeIndex].getDay(day));
+		if (this._selectedScheduleDaysCache) return this._selectedScheduleDaysCache;
+
+		return (this._selectedScheduleDaysCache = this.selectedDays.map(day =>
+			this.sheet.schedule[this.employeeIndex].getDay(day),
+		));
 	}
 }
 
