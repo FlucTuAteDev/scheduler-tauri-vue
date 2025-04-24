@@ -1,0 +1,6 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Thu Apr 24 14:34:50 GMT 2025","Thu Apr 24 14:34:50 GMT 2025","1","","Date util functions: workhoursInMonth function","","","","handles general cases",""
+"passed","Thu Apr 24 14:34:50 GMT 2025","Thu Apr 24 14:34:50 GMT 2025","1","","Date util functions: workhoursInMonth function","","","","handles workhoursPerDay parameter",""
+"passed","Thu Apr 24 14:34:50 GMT 2025","Thu Apr 24 14:34:50 GMT 2025","2","","Date util functions: daysOfWeekInMonth function","","","","handles Y2K38 problem",""
+"passed","Thu Apr 24 14:34:50 GMT 2025","Thu Apr 24 14:34:50 GMT 2025","2","","Date util functions: daysOfWeekInMonth function","","","","handles leap year",""
+"passed","Thu Apr 24 14:34:50 GMT 2025","Thu Apr 24 14:34:50 GMT 2025","8","","Date util functions: daysOfWeekInMonth function","","","","handles general cases",""
