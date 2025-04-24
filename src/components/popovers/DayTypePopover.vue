@@ -13,7 +13,7 @@ import SetDayTypeButton from "@/components/buttons/SetDayTypeButton.vue";
 // 	label: string;
 // }
 
-const model = defineModel<boolean>();
+const visible = defineModel<boolean>();
 
 const { selectionElements = [] } = defineProps<{
 	selectionElements?: Element[];
@@ -30,16 +30,15 @@ function close() {
 }
 
 const shift: Ref<Shift> = ref({ start: 7, end: 19, duration: 12 });
-const dayTypeButtons: DayType[] = [
-	DayType.paid,
-	DayType.freeday,
-	DayType.nonworking_day,
-	DayType.weekend,
-	DayType.sick,
-	DayType.holiday,
+const dayTypeButtons = <const>[
+	[DayType.paid, "f"],
+	[DayType.freeday, "s"],
+	[DayType.nonworking_day, "p"],
+	[DayType.weekend, "h"],
+	[DayType.sick, "t"],
+	[DayType.holiday, "ü"],
 ];
 
-const accelerators: string[] = ["f", "s", "p", "h", "t", "ü", "Delete", "Enter", "Escape"]; //Last three are used only in IgnoreKeys
 const pinned = ref(false);
 const last_action = ref(""); //TODO: restrict type?
 
@@ -91,6 +90,7 @@ watch(() => selectionElements, createNewBatch);
 // 			this.$refs.base.updateRects();
 // 		},
 // 		ignoreKeys(e: KeyboardEvent) {
+// 			const accelerators: string[] = ["f", "s", "p", "h", "t", "ü", "Delete", "Enter", "Escape"]; //Last three are used only in IgnoreKeys
 // 			if (!this.value) return;
 // 			let k = e.key;
 // 			//Arrow key, Ctrl + *, any single letter, any accelerator
@@ -109,7 +109,7 @@ watch(() => selectionElements, createNewBatch);
 <template>
 	<base-popover
 		ref="base"
-		v-model="model"
+		v-model="visible"
 		:targets="selectionElements"
 		:offset="{ x: 0, y: 12 }"
 		:absolute="pinned"
@@ -139,7 +139,7 @@ watch(() => selectionElements, createNewBatch);
 				</accelerated-tooltip-button>
 			</div>
 			<div class="upper">
-				<shift-picker :focus="model" @input="setShift"> </shift-picker>
+				<shift-picker :focus="visible" @input="setShift"> </shift-picker>
 
 				<accelerated-tooltip-button
 					:type="DayType.shift"
@@ -162,10 +162,10 @@ watch(() => selectionElements, createNewBatch);
 			</div>
 			<div class="lower">
 				<set-day-type-button
-					v-for="(dayType, i) in dayTypeButtons"
+					v-for="[dayType, accelerator] in dayTypeButtons"
 					:key="dayType"
-					:day-type="dayType"
-					:accelerator="accelerators[i]"
+					:day-type
+					:accelerator
 					@click="setType(dayType)"
 				/>
 			</div>
