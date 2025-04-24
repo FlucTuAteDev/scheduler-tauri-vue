@@ -2,7 +2,8 @@ import { onUnmounted, type Reactive, reactive, type Ref } from "vue";
 import { clamp, range, throttle } from "lodash";
 import { type Sheet } from "@/model/schedule-sheet";
 
-class SelectionState {
+// TODO: optimize selectionState array getters with cache/computed (selectedDays, selectedScheduleDays etc...)
+export class SelectionState {
 	//The drag start and end are represented by day numbers (e.g 1...31) and are clamped by their setters to 1...monthLength
 	private _start = 0;
 	private _end = 0;
@@ -44,7 +45,12 @@ class SelectionState {
 	get selectedDays(): number[] {
 		//E.g. (selectionLeft: 5, selectionRight: 7) => [5,6,7]
 		if (this.selectionRight == 0) return [];
+		// console.log("selecteddays");
 		return range(this.selectionLeft, this.selectionRight + 1);
+	}
+
+	get selectedScheduleDays() {
+		return this.selectedDays.map(day => this.sheet.schedule[this.employeeIndex].getDay(day));
 	}
 }
 
@@ -134,6 +140,17 @@ export function useSelection(sheet: Reactive<Sheet>, popoverVisible: Ref<boolean
 			}
 		}
 	}
+
+	// const selectedScheduleDays = computed(() =>
+	// 	selection.selectedDays.map(day => sheet.schedule[selection.employeeIndex].getDay(day)),
+	// );
+
+	// const selectedDays = computed(() => {
+	// 	//E.g. (selectionLeft: 5, selectionRight: 7) => [5,6,7]
+	// 	if (selection.selectionRight == 0) return [];
+	// 	return range(selection.selectionLeft, selection.selectionRight + 1);
+	// });
+
 	const arrowKeyDownThrottled = throttle(arrowKeyDown, 100);
 	window.addEventListener("keydown", arrowKeyDownThrottled);
 	onUnmounted(() => window.removeEventListener("keydown", arrowKeyDownThrottled));

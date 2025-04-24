@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, type Reactive } from "vue";
 import { DayType, DayTypeDescriptions } from "@/model/day-types";
 import { type ScheduleDay } from "@/model/schedule-sheet";
 import { isMonday, isWeekend } from "date-fns";
 import { fontColorFromBackground } from "@/utils/color";
+import { type SelectionState } from "@/composables/selectionState";
 
-const { scheduleDay, selection = [] } = defineProps<{
+const { scheduleDay, selection } = defineProps<{
 	scheduleDay: ScheduleDay;
-	selection?: number[];
+	selection: Reactive<SelectionState>;
 	// error_groups: ErrorGroup[],
 }>();
 
@@ -38,7 +39,7 @@ const style = computed(() => {
 });
 
 function is_selected(): boolean {
-	return selection.includes(scheduleDay.day);
+	return selection.selectedScheduleDays.includes(scheduleDay);
 }
 </script>
 

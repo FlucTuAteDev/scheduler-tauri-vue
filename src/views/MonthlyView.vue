@@ -68,32 +68,30 @@ function getDayElement(employeeIndex: number, day: number): Element | undefined 
 	return dayElement;
 }
 
-const { selection, deselect, dragStart, dragEnd, dragEnter } = useSelection(sheet, popoverVisible);
-
-//TODO: should these be in the selectionState composable as well?
 const selectionElements = computed(() =>
 	selection.selectedDays
 		.map(day => getDayElement(selection.employeeIndex, day))
 		.filter(el => el != undefined),
 );
 
-const selectedScheduleDays = computed(() =>
-	selection.selectedDays.map(day => sheet.schedule[selection.employeeIndex].getDay(day)),
-);
+const { selection, deselect, dragStart, dragEnd, dragEnter } = useSelection(sheet, popoverVisible);
+
 // const cursorElement = computed(() =>
 // 	drag.end > 0 ? getDayElement(drag.employeeIndex, drag.end) : undefined,
 // );
 
+// const selectedScheduleDays = computed(() => selection.selectedScheduleDays);
+
 function setShift(shift: Shift) {
 	if (!selection.active) return;
-	for (const day of selectedScheduleDays.value) {
+	for (const day of selection.selectedScheduleDays) {
 		day.setShift(shift.start, shift.duration);
 	}
 }
 
 function setDayType(dayType: DayType) {
 	if (!selection.active) return;
-	for (const day of selectedScheduleDays.value) {
+	for (const day of selection.selectedScheduleDays) {
 		day.setType(dayType);
 	}
 }
@@ -194,12 +192,7 @@ function setDayType(dayType: DayType) {
 					v-for="(row, i) in sheet.schedule"
 					:key="row.employee.id"
 					ref="schedule-rows"
-					:selection="
-						selection.active && i == selection.employeeIndex
-							? selection.selectedDays
-							: []
-					"
-					v-bind="{ row }"
+					v-bind="{ row, selection }"
 					@day-mouse-down="dragStart(i, $event)"
 					@day-mouse-up="dragEnd(i, $event)"
 					@day-mouse-enter="dragEnter(i, $event)"

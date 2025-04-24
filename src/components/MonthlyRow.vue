@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, type Reactive } from "vue";
 import ScheduleDayComponent from "@/components/ScheduleDay.vue";
 import { type ScheduleRow } from "@/model/schedule-sheet";
+import { type SelectionState } from "@/composables/selectionState";
 
 const props = defineProps<{
 	row: ScheduleRow;
-	selection: number[];
+	selection: Reactive<SelectionState>;
 	// error_groups: ErrorGroup[],
 	// aggregates: Aggregate[],
 }>();
