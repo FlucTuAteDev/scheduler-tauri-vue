@@ -90,5 +90,9 @@ const routes = [
 html,
 body {
 	overflow: auto !important;
+	/* TODO: Only disable annoying/unnecessary selections */
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 </style>
