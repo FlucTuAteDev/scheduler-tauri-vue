@@ -1,5 +1,5 @@
-import { type Reactive, reactive, type Ref } from "vue";
-import { clamp, range } from "lodash";
+import { onUnmounted, type Reactive, reactive, type Ref } from "vue";
+import { clamp, range, throttle } from "lodash";
 import { type Sheet } from "@/model/schedule-sheet";
 
 class SelectionState {
@@ -112,6 +112,28 @@ export function useSelection(sheet: Reactive<Sheet>, popoverVisible: Ref<boolean
 		selection.active = false;
 		popoverVisible.value = false;
 	}
+
+	function arrowKeyDown(e: KeyboardEvent) {
+		const bindings = {
+			ArrowRight: [1, 0],
+			ArrowLeft: [-1, 0],
+			ArrowUp: [0, -1],
+			ArrowDown: [0, 1],
+		};
+		const bind = Object.entries(bindings).find(b => b[0] == e.key);
+		if (bind) {
+			const [dx, dy] = bind[1] as [number, number];
+			if (e.ctrlKey) {
+				// setTableScroll.value(dx * 40, dy * 40);
+			} else {
+				moveSelection(dx, dy, e);
+				// context.root.$nextTick(() => selection_tracker.scrollIntoView(selection_elements.value, setTableScroll.value));
+			}
+		}
+	}
+	const arrowKeyDownThrottled = throttle(arrowKeyDown, 100);
+	window.addEventListener("keydown", arrowKeyDownThrottled);
+	onUnmounted(() => window.removeEventListener("keydown", arrowKeyDownThrottled));
 
 	return {
 		selection,

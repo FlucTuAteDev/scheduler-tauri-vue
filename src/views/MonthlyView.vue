@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, onUnmounted } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 import TextTooltipButton from "@/components/buttons/TextTooltipButton.vue";
 import { useSheetState } from "@/state/store";
 import { format, getYear } from "date-fns";
@@ -10,7 +10,6 @@ import MonthlyRow from "@/components/MonthlyRow.vue";
 import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipButton.vue";
 import DayTypePopover from "@/components/popovers/DayTypePopover.vue";
 import { useSelection } from "@/composables/selectionState";
-import { throttle } from "lodash";
 import { type DayType } from "@/model/day-types";
 import { type Shift } from "@/components/pickers/ShiftPicker.vue";
 
@@ -48,28 +47,6 @@ const popoverVisible = ref(false);
 //FIXME: https://vuejs.org/guide/essentials/template-refs states: "It should be noted that the ref array does not guarantee the same order as the source array."
 const monthlyRowsRef = useTemplateRef("schedule-rows");
 
-function arrowKeyDown(e: KeyboardEvent) {
-	const bindings = {
-		ArrowRight: [1, 0],
-		ArrowLeft: [-1, 0],
-		ArrowUp: [0, -1],
-		ArrowDown: [0, 1],
-	};
-	const bind = Object.entries(bindings).find(b => b[0] == e.key);
-	if (bind) {
-		const [dx, dy] = bind[1] as [number, number];
-		if (e.ctrlKey) {
-			// setTableScroll.value(dx * 40, dy * 40);
-		} else {
-			moveSelection(dx, dy, e);
-			// context.root.$nextTick(() => selection_tracker.scrollIntoView(selection_elements.value, setTableScroll.value));
-		}
-	}
-}
-let arrowKeyDownThrottled = throttle(arrowKeyDown, 100);
-window.addEventListener("keydown", arrowKeyDownThrottled);
-onUnmounted(() => window.removeEventListener("keydown", arrowKeyDownThrottled));
-
 function getDayElement(employeeIndex: number, day: number): Element | undefined {
 	// let employeeId = sheet.schedule[index]?.employee.id;
 
@@ -91,8 +68,9 @@ function getDayElement(employeeIndex: number, day: number): Element | undefined 
 	return dayElement;
 }
 
-const { selection, moveSelection, deselect } = useSelection(sheet, popoverVisible);
+const { selection, deselect } = useSelection(sheet, popoverVisible);
 
+//TODO: should these be in the selectionState composable as well?
 const selectionElements = computed(() =>
 	selection.selectedDays
 		.map(day => getDayElement(selection.employeeIndex, day))
