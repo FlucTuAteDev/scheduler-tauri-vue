@@ -68,7 +68,7 @@ function getDayElement(employeeIndex: number, day: number): Element | undefined 
 	return dayElement;
 }
 
-const { selection, deselect } = useSelection(sheet, popoverVisible);
+const { selection, deselect, dragStart, dragEnd, dragEnter } = useSelection(sheet, popoverVisible);
 
 //TODO: should these be in the selectionState composable as well?
 const selectionElements = computed(() =>
@@ -200,6 +200,9 @@ function setDayType(dayType: DayType) {
 							: []
 					"
 					v-bind="{ row }"
+					@day-mouse-down="dragStart(i, $event)"
+					@day-mouse-up="dragEnd(i, $event)"
+					@day-mouse-enter="dragEnter(i, $event)"
 				/>
 			</tbody>
 		</table>

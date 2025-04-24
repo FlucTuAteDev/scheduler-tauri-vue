@@ -77,6 +77,9 @@ export function useSelection(sheet: Reactive<Sheet>, popoverVisible: Ref<boolean
 		}
 		selection.dragging = false;
 	}
+
+	// Called when the user ends the mouse drag outside the table rather than over a cell.
+	// We end the drag with the current selection
 	function dragEndEmpty() {
 		dragEnd(selection.employeeIndex, selection.end);
 	}
@@ -134,6 +137,9 @@ export function useSelection(sheet: Reactive<Sheet>, popoverVisible: Ref<boolean
 	const arrowKeyDownThrottled = throttle(arrowKeyDown, 100);
 	window.addEventListener("keydown", arrowKeyDownThrottled);
 	onUnmounted(() => window.removeEventListener("keydown", arrowKeyDownThrottled));
+
+	window.addEventListener("mouseup", dragEndEmpty);
+	onUnmounted(() => window.removeEventListener("mouseup", dragEndEmpty));
 
 	return {
 		selection,
