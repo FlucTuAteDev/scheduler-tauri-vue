@@ -9,7 +9,7 @@ import { useStaffState } from "@/state/staff";
 import MonthlyRow from "@/components/MonthlyRow.vue";
 import AcceleratedTooltipButton from "@/components/buttons/AcceleratedTooltipButton.vue";
 import DayTypePopover from "@/components/popovers/DayTypePopover.vue";
-import { useDragState } from "@/composables/dragSelection";
+import { useSelection } from "@/composables/selectionState";
 import { throttle } from "lodash";
 import { type DayType } from "@/model/day-types";
 import { type Shift } from "@/components/pickers/ShiftPicker.vue";
@@ -91,30 +91,30 @@ function getDayElement(employeeIndex: number, day: number): Element | undefined 
 	return dayElement;
 }
 
-const { drag, moveSelection, deselect, selection } = useDragState(sheet, popoverVisible);
+const { selection, moveSelection, deselect } = useSelection(sheet, popoverVisible);
 
 const selectionElements = computed(() =>
-	selection.value
-		.map(day => getDayElement(drag.employeeIndex, day))
+	selection.selectedDays
+		.map(day => getDayElement(selection.employeeIndex, day))
 		.filter(el => el != undefined),
 );
 
 const selectedScheduleDays = computed(() =>
-	selection.value.map(day => sheet.schedule[drag.employeeIndex].getDay(day)),
+	selection.selectedDays.map(day => sheet.schedule[selection.employeeIndex].getDay(day)),
 );
 // const cursorElement = computed(() =>
 // 	drag.end > 0 ? getDayElement(drag.employeeIndex, drag.end) : undefined,
 // );
 
 function setShift(shift: Shift) {
-	if (!drag.selectionActive) return;
+	if (!selection.active) return;
 	for (const day of selectedScheduleDays.value) {
 		day.setShift(shift.start, shift.duration);
 	}
 }
 
 function setDayType(dayType: DayType) {
-	if (!drag.selectionActive) return;
+	if (!selection.active) return;
 	for (const day of selectedScheduleDays.value) {
 		day.setType(dayType);
 	}
@@ -216,7 +216,11 @@ function setDayType(dayType: DayType) {
 					v-for="(row, i) in sheet.schedule"
 					:key="row.employee.id"
 					ref="schedule-rows"
-					:selection="drag.selectionActive && i == drag.employeeIndex ? selection : []"
+					:selection="
+						selection.active && i == selection.employeeIndex
+							? selection.selectedDays
+							: []
+					"
 					v-bind="{ row }"
 				/>
 			</tbody>
