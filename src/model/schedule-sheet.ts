@@ -27,7 +27,9 @@ export class Sheet {
 	addRow(employee: Employee) {
 		this.getRow(employee);
 
-		this.schedule.push(new ScheduleRow(this, employee, this.monthLength));
+		const row = new ScheduleRow(this, employee, this.monthLength);
+		this.schedule.push(row);
+		return row;
 	}
 
 	getRow(employee: Employee): ScheduleRow | undefined {
