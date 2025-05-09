@@ -1,4 +1,4 @@
-import { clamp } from "lodash";
+import { clamp } from "lodash-es";
 
 class RGB {
 	constructor(

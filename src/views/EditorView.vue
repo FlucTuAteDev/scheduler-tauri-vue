@@ -43,7 +43,7 @@ function resized() {
 				</pane>
 				<pane>
 					<div class="placeholder text-center mt-2 overline">
-						<v-icon>mdi-warning</v-icon>
+						<v-icon>mdi-alert-box</v-icon>
 						Hibák és figyelmeztetések itt fognak megjelenni
 					</div>
 

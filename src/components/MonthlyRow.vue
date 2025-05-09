@@ -3,12 +3,13 @@ import { computed, type Reactive } from "vue";
 import ScheduleDayComponent from "@/components/ScheduleDay.vue";
 import { type ScheduleRow } from "@/model/schedule-sheet";
 import { type SelectionState } from "@/composables/selectionState";
+import { type Aggregate } from "@/model/aggregates";
 
 const props = defineProps<{
 	row: ScheduleRow;
 	selection: Reactive<SelectionState>;
 	// error_groups: ErrorGroup[],
-	// aggregates: Aggregate[],
+	aggregates: Aggregate[];
 }>();
 
 const emit = defineEmits<{
@@ -31,16 +32,14 @@ function enter(i: number) {
 const days = computed(() => props.row.days);
 const employeeName = computed(() => props.row.employee.name);
 
-// accumulator_values(): (number | boolean)[] {
-//       return this.aggregates.map((a) => a.evaluate(this.days as ScheduleDay[]));
-//     },
-//     counter_styles(): Array<any> {
-//       // return aggregates.map(a => ({ backgroundColor: a.header_color }))
-//       return this.aggregates.map((a, i) => ({
-//         backgroundColor: a.background_color,
-//         right: (this.aggregates.length - 1 - i) * 3 + "em", //right side sticky columns
-//       }));
-//     },
+const accumulatorValues = computed(() => props.aggregates.map(a => a.evaluate(days.value)));
+const counterStyles = computed(() =>
+	props.aggregates.map((aggregate, index) => ({
+		backgroundColor: aggregate.background_color,
+		//FIXME: this calculation is duplicated (and brittle)
+		right: (props.aggregates.length - 1 - index) * 3 + "em", //right side sticky columns
+	})),
+);
 </script>
 
 <template>
@@ -59,17 +58,17 @@ const employeeName = computed(() => props.row.employee.name);
 			@mouseup.left.stop="up(scheduleDay.day)"
 			@mouseenter="enter(scheduleDay.day)"
 		/>
-		<!-- <td
-			class="sticky-right text-center counter"
-			v-for="(acc, i) in accumulator_values"
-			:style="counter_styles[i]"
+		<td
+			v-for="(acc, i) in accumulatorValues"
 			:key="aggregates[i].label"
+			class="sticky-right text-center counter"
+			:style="counterStyles[i]"
 		>
 			<v-icon v-if="typeof acc === 'boolean'" :color="acc ? 'success' : 'warning'">
 				{{ acc ? "mdi-check" : "mdi-alert" }}
 			</v-icon>
 			<span v-else>{{ acc }}</span>
-		</td> -->
+		</td>
 	</tr>
 </template>
 

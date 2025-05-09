@@ -12,6 +12,8 @@ import DayTypePopover from "@/components/popovers/DayTypePopover.vue";
 import { useSelection } from "@/composables/selectionState";
 import { type DayType } from "@/model/day-types";
 import { type Shift } from "@/components/pickers/ShiftPicker.vue";
+import { accumulators } from "@/model/aggregates";
+import { fontColorFromBackground } from "@/utils/color";
 
 const sheetState = useSheetState();
 const sheet = sheetState.activeSheet;
@@ -95,6 +97,20 @@ function setDayType(dayType: DayType) {
 		day.setType(dayType);
 	}
 }
+
+const aggregateHeaders = computed((): string[] => {
+	return accumulators.map(a => a.label);
+});
+
+//Having this as computed so it's cached and doesn't run on every render
+const headerStyles = computed(() => {
+	return accumulators.map((a, i) => ({
+		backgroundColor: a.header_color,
+		color: fontColorFromBackground(a.header_color),
+		//FIXME: can we find a way to avoid hardcoding the width here?
+		right: (accumulators.length - 1 - i) * 3 + "em", //right side sticky columns
+	}));
+});
 </script>
 
 <template>
@@ -169,15 +185,15 @@ function setDayType(dayType: DayType) {
 					<th v-for="day in sheet.monthLength" :key="day" :ref="'header' + day">
 						{{ day }}
 					</th>
-					<!-- <th
-						v-for="(label, i) in right_side_headers"
+					<!-- @contextmenu="aggregatesContextMenu" -->
+					<th
+						v-for="(label, i) in aggregateHeaders"
 						:key="label"
 						class="header-sticky-right"
-						:style="header_styles[i]"
-						@contextmenu="aggregatesContextMenu"
+						:style="headerStyles[i]"
 					>
 						{{ label }}
-					</th> -->
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -193,6 +209,7 @@ function setDayType(dayType: DayType) {
 					:key="row.employee.id"
 					ref="schedule-rows"
 					v-bind="{ row, selection }"
+					:aggregates="accumulators"
 					@day-mouse-down="dragStart(i, $event)"
 					@day-mouse-up="dragEnd(i, $event)"
 					@day-mouse-enter="dragEnter(i, $event)"
@@ -222,6 +239,12 @@ function setDayType(dayType: DayType) {
 .names-header {
 	min-width: 10em;
 	border-right-style: double;
+}
+
+.header-sticky-right {
+	position: sticky;
+	z-index: 2;
+	min-width: 3em;
 }
 
 #toolbar-info-container {
