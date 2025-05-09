@@ -1,13 +1,13 @@
 import { createMemoryHistory, createRouter, type RouteRecordRaw } from "vue-router";
 
 import SheetsView from "@/views/SheetsView.vue";
-import MonthlyView from "@/views/MonthlyView.vue";
+import EditorView from "@/views/EditorView.vue";
 
 const routes: RouteRecordRaw[] = [
 	{
 		path: "/",
 		name: "Editor",
-		component: MonthlyView,
+		component: EditorView,
 	},
 	// {
 	// 	path: "/staff",
