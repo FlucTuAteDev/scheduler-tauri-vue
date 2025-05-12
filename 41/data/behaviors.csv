@@ -1,0 +1,6 @@
+"Epic","Feature","Story","FAILED","BROKEN","PASSED","SKIPPED","UNKNOWN"
+"","Row aggregation: Aggregate classes: TotalHours class","","0","0","1","0","0"
+"","Date util functions: workhoursInMonth function","","0","0","2","0","0"
+"","Row aggregation: Aggregate classes: DayTypeCounter class","","0","0","2","0","0"
+"","Date util functions: daysOfWeekInMonth function","","0","0","3","0","0"
+"","Row aggregation: hoursBetween function","","0","0","3","0","0"
