@@ -24,13 +24,11 @@ export default tseslint.config(
 				parser: tseslint.parser,
 			},
 		},
-		rules: {
-			"@typescript-eslint/no-unused-vars": "warn",
-		},
 	},
 	eslintConfigPrettier,
 	{
 		rules: {
+			"@typescript-eslint/no-unused-vars": "warn",
 			"@typescript-eslint/consistent-type-imports": [
 				"error",
 				{
@@ -39,12 +37,50 @@ export default tseslint.config(
 			],
 			"@typescript-eslint/naming-convention": [
 				"error",
-				{ selector: "objectLiteralProperty", format: null },
+				{
+					selector: "default",
+					format: ["camelCase"],
+					leadingUnderscore: "allow",
+					trailingUnderscore: "allow",
+				},
+				{
+					selector: "objectLiteralProperty",
+					format: null,
+				},
+				{
+					selector: "typeProperty",
+					format: null,
+					custom: {
+						match: true,
+						// Camel or kebab case. Needed for vue events
+						regex: "^([a-z]+([A-Z0-9]+[a-z0-9]+[A-Za-z0-9]*)*|[a-z0-9]+(-[a-z0-9]+)*)$",
+					},
+				},
+				{
+					selector: "enumMember",
+					format: ["UPPER_CASE"],
+				},
+				{
+					selector: "import",
+					format: ["camelCase", "PascalCase"],
+				},
+
+				{
+					selector: "variable",
+					format: ["camelCase", "UPPER_CASE"],
+					leadingUnderscore: "allow",
+					trailingUnderscore: "allow",
+				},
+				{
+					selector: "typeLike",
+					format: ["PascalCase"],
+				},
 			],
 		},
 	},
 	{
 		rules: {
+			"vue/custom-event-name-casing": ["error", "kebab-case"],
 			"vue/component-name-in-template-casing": [
 				"error",
 				"kebab-case",

@@ -31,25 +31,25 @@ function close() {
 
 const shift: Ref<Shift> = ref({ start: 7, end: 19, duration: 12 });
 const dayTypeButtons = <const>[
-	[DayType.paid, "f"],
-	[DayType.freeday, "s"],
-	[DayType.nonworking_day, "p"],
-	[DayType.weekend, "h"],
-	[DayType.sick, "t"],
-	[DayType.holiday, "ü"],
+	[DayType.PAID, "f"],
+	[DayType.FREEDAY, "s"],
+	[DayType.NONWORKING_DAY, "p"],
+	[DayType.WEEKEND, "h"],
+	[DayType.SICK, "t"],
+	[DayType.HOLIDAY, "ü"],
 ];
 
 const pinned = ref(false);
-const last_action = ref(""); //TODO: restrict type?
+const lastAction = ref(""); //TODO: restrict type?
 
 function setShift(newShift: Shift, newBatch: boolean = false) {
 	shift.value = newShift;
-	if (last_action.value !== "set-shift" || newBatch) {
+	if (lastAction.value !== "set-shift" || newBatch) {
 		createNewBatch();
 	}
 
 	emit("set-shift", shift.value);
-	last_action.value = "set-shift";
+	lastAction.value = "set-shift";
 
 	console.log("set-shift", shift.value);
 }
@@ -58,7 +58,7 @@ function setType(dayType: DayType) {
 	createNewBatch();
 	emit("set-day-type", dayType);
 
-	last_action.value = "set-type";
+	lastAction.value = "set-type";
 
 	console.log("set-day-type", dayType);
 }
@@ -142,7 +142,7 @@ watch(() => selectionElements, createNewBatch);
 				<shift-picker :focus="visible" @input="setShift"> </shift-picker>
 
 				<accelerated-tooltip-button
-					:type="DayType.shift"
+					:type="DayType.SHIFT"
 					tooltip="Műszak"
 					accelerator="Enter"
 					@click="setShift(shift, true)"
@@ -150,12 +150,12 @@ watch(() => selectionElements, createNewBatch);
 					<v-icon>mdi-set-split</v-icon>
 				</accelerated-tooltip-button>
 				<accelerated-tooltip-button
-					:type="DayType.empty"
+					:type="DayType.EMPTY"
 					dark
 					tooltip="Törlés"
 					color="red"
 					accelerator="Delete"
-					@click="setType(DayType.empty)"
+					@click="setType(DayType.EMPTY)"
 				>
 					<v-icon>mdi-delete</v-icon>
 				</accelerated-tooltip-button>

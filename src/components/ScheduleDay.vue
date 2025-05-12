@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, type Reactive } from "vue";
-import { DayType, DayTypeDescriptions } from "@/model/day-types";
+import { DayType, DAY_TYPE_DESCRIPTIONS } from "@/model/day-types";
 import { type ScheduleDay } from "@/model/schedule-sheet";
 import { isMonday, isWeekend } from "date-fns";
 import { fontColorFromBackground } from "@/utils/color";
@@ -20,7 +20,7 @@ const classes = computed(() => {
 		{
 			// "has-warning": this.error_groups.some(x => !x.fatal),
 			// "has-error": this.error_groups.some(x => x.fatal),
-			selected: is_selected(),
+			selected: isSelected(),
 			weekend: isWeekend(scheduleDay.date) /* || isHoliday(scheduleDay.date) */,
 			monday: isMonday(scheduleDay.date),
 			first: selection.selectionLeft == scheduleDay.day,
@@ -34,24 +34,24 @@ const typeString = computed(() => {
 });
 
 const style = computed(() => {
-	const color = DayTypeDescriptions[scheduleDay.type].color;
+	const color = DAY_TYPE_DESCRIPTIONS[scheduleDay.type].color;
 	return { backgroundColor: color, color: fontColorFromBackground(color) };
 });
 
-function is_selected(): boolean {
+function isSelected(): boolean {
 	return selection.selectedScheduleDays.includes(scheduleDay);
 }
 </script>
 
 <template>
 	<td :class="classes" :style="style">
-		<template v-if="scheduleDay.type === DayType.shift">
+		<template v-if="scheduleDay.type === DayType.SHIFT">
 			{{ scheduleDay.shiftStart }}
 			<br />
 			{{ scheduleDay.shiftEnd }}
 		</template>
 		<template v-else>
-			{{ DayTypeDescriptions[scheduleDay.type].label }}
+			{{ DAY_TYPE_DESCRIPTIONS[scheduleDay.type].label }}
 		</template>
 	</td>
 </template>

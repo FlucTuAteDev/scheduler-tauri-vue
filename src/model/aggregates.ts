@@ -1,5 +1,5 @@
 import { type Sheet, type ScheduleDay } from "@/model/schedule-sheet";
-import { DayType, type DayTypeDescription, DayTypeDescriptions } from "@/model/day-types";
+import { DayType, type DayTypeDescription, DAY_TYPE_DESCRIPTIONS } from "@/model/day-types";
 import { lighten } from "@/utils/color";
 import { range } from "lodash-es";
 
@@ -7,13 +7,13 @@ import { range } from "lodash-es";
 export interface Aggregate {
 	name: string;
 	label: string;
-	header_color: string;
-	background_color: string;
+	headerColor: string;
+	backgroundColor: string;
 	evaluate: (row: ScheduleDay[]) => number | boolean;
 }
 
 // Count how many times the given DayType appears in a schedule row
-// Can also take an array of DayTypes to sum up
+// Can also take an array of DayTypes to sum up4
 export class DayTypeCounter implements Aggregate {
 	types: DayType[];
 	desc: DayTypeDescription;
@@ -21,17 +21,17 @@ export class DayTypeCounter implements Aggregate {
 		types: DayType | DayType[],
 		public name: string = "",
 		public label: string = "",
-		public header_color: string = "",
-		public background_color: string = "",
+		public headerColor: string = "",
+		public backgroundColor: string = "",
 	) {
 		//Take single values as single element arrays
 		this.types = ([] as DayType[]).concat(types);
 		// If we are aggregating multiple DayTypes, pick the first one's name
-		this.name = DayTypeDescriptions[this.types[0]].label;
-		this.desc = DayTypeDescriptions[this.types[0]];
-		this.background_color = background_color || lighten(this.desc.color, 175);
+		this.name = DAY_TYPE_DESCRIPTIONS[this.types[0]].label;
+		this.desc = DAY_TYPE_DESCRIPTIONS[this.types[0]];
+		this.backgroundColor = backgroundColor || lighten(this.desc.color, 175);
 		this.label = label || this.desc.label;
-		this.header_color = header_color || this.desc.color;
+		this.headerColor = headerColor || this.desc.color;
 	}
 	evaluate(row: ScheduleDay[]): number {
 		// console.log("eval")
@@ -42,19 +42,19 @@ export class DayTypeCounter implements Aggregate {
 
 // Counts the total working hours in the row
 export class TotalHours implements Aggregate {
-	desc = DayTypeDescriptions[DayType.shift];
+	desc = DAY_TYPE_DESCRIPTIONS[DayType.SHIFT];
 	constructor(
 		public name: string,
 		public label: string,
-		public header_color: string,
-		public background_color: string,
+		public headerColor: string,
+		public backgroundColor: string,
 	) {}
 	evaluate(row: ScheduleDay[]): number {
 		return row.reduce((total, day) => {
 			// Sum shifts
-			if (day.type === DayType.shift) return total + day.shiftDuration;
+			if (day.type === DayType.SHIFT) return total + day.shiftDuration;
 			//Paid leave, sick leave and holiday count as an 8 hour day
-			if ([DayType.paid, DayType.sick, DayType.holiday].some(x => x === day.type))
+			if ([DayType.PAID, DayType.SICK, DayType.HOLIDAY].some(x => x === day.type))
 				return total + 8;
 
 			return total;
@@ -68,14 +68,14 @@ export class ShiftVariety implements Aggregate {
 	constructor(
 		public name: string,
 		public label: string,
-		public header_color: string,
-		public background_color: string,
+		public headerColor: string,
+		public backgroundColor: string,
 	) {}
 	evaluate(row: ScheduleDay[]): boolean {
 		const [normalShiftCount, differentShiftCount] = row.reduce(
 			(acc, curr) => {
 				if (curr.shiftStart === 7) acc[0]++;
-				else if (curr.type === DayType.shift) acc[1]++;
+				else if (curr.type === DayType.SHIFT) acc[1]++;
 
 				return acc;
 			},
@@ -89,15 +89,15 @@ export class ShiftVariety implements Aggregate {
 
 // Some shifts should be 8 hours or shorter
 class SomeShortShifts implements Aggregate {
-	desc = DayTypeDescriptions[DayType.shift];
+	desc = DAY_TYPE_DESCRIPTIONS[DayType.SHIFT];
 	constructor(
 		public name: string,
 		public label: string,
-		public header_color: string,
-		public background_color: string,
+		public headerColor: string,
+		public backgroundColor: string,
 	) {}
 	evaluate(row: ScheduleDay[]): boolean {
-		return row.filter(d => d.type == DayType.shift && d.shiftDuration <= 8).length > 1;
+		return row.filter(d => d.type == DayType.SHIFT && d.shiftDuration <= 8).length > 1;
 	}
 }
 
@@ -105,7 +105,7 @@ export const accumulators: Array<Aggregate> = [
 	new TotalHours("totalHours", "Össz. óra", "#FFFFFF", "#FFFFFF"),
 	new ShiftVariety("shiftVariety", "33%", "#FFFFFF", "#FFFFFF"),
 	new SomeShortShifts("someShortShifts", "2x8", "#FFFFFF", "#FFFFFF"),
-	...[DayType.paid, DayType.sick, [DayType.freeday, DayType.nonworking_day, DayType.weekend]].map(
+	...[DayType.PAID, DayType.SICK, [DayType.FREEDAY, DayType.NONWORKING_DAY, DayType.WEEKEND]].map(
 		t => new DayTypeCounter(t),
 	),
 ];
@@ -120,14 +120,14 @@ export class StartTimeCount {
 	}
 }
 
-export function CountStartingTimes(sheet: Sheet): Map<number, number[]> {
+export function countStartingTimes(sheet: Sheet): Map<number, number[]> {
 	const counter = new Map<number, number[]>();
 
 	//FIXME: there must be an easier way to implement this
 	for (const row of sheet.schedule) {
 		for (let i = 0; i < sheet.monthLength; i++) {
 			const day = row.getDay(i + 1);
-			if (day.type != DayType.shift) continue;
+			if (day.type != DayType.SHIFT) continue;
 
 			const start = day.shiftStart;
 			if (!counter.has(start)) counter.set(start, new Array(sheet.monthLength).fill(0));
@@ -139,14 +139,14 @@ export function CountStartingTimes(sheet: Sheet): Map<number, number[]> {
 }
 
 // Counts how many employees are present between the given start and end hours
-export function CountPresentBetween(sheet: Sheet, start: number, end: number) {
+export function countPresentBetween(sheet: Sheet, start: number, end: number) {
 	const result = new Array(sheet.monthLength).fill(0);
 
 	const targetHours = hoursBetween(start, end);
 	for (const row of sheet.schedule) {
 		for (let i = 0; i < sheet.monthLength; i++) {
 			const day = row.getDay(i + 1);
-			if (day.type != DayType.shift) continue;
+			if (day.type != DayType.SHIFT) continue;
 
 			const currentHours = hoursBetween(day.shiftStart, day.shiftEnd);
 			// If the target shift is within the current shift

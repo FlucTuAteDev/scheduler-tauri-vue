@@ -105,8 +105,8 @@ const aggregateHeaders = computed((): string[] => {
 //Having this as computed so it's cached and doesn't run on every render
 const headerStyles = computed(() => {
 	return accumulators.map((a, i) => ({
-		backgroundColor: a.header_color,
-		color: fontColorFromBackground(a.header_color),
+		backgroundColor: a.headerColor,
+		color: fontColorFromBackground(a.headerColor),
 		//FIXME: can we find a way to avoid hardcoding the width here?
 		right: (accumulators.length - 1 - i) * 3 + "em", //right side sticky columns
 	}));

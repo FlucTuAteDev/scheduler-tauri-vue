@@ -8,7 +8,7 @@ class RGB {
 	) {}
 }
 
-export function hexToRGB(color: string): RGB {
+export function hexToRgb(color: string): RGB {
 	color = color.replace("#", "");
 	const r = parseInt(color.substring(0, 2), 16); // hexToR
 	const g = parseInt(color.substring(2, 4), 16); // hexToG
@@ -16,7 +16,7 @@ export function hexToRGB(color: string): RGB {
 	return new RGB(r, g, b);
 }
 //Based on https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-export function RGBToHex(color: RGB) {
+export function rgbToHex(color: RGB) {
 	const r = clamp(Math.round(color.red), 0, 255);
 	const g = clamp(Math.round(color.green), 0, 255);
 	const b = clamp(Math.round(color.blue), 0, 255);
@@ -29,15 +29,15 @@ export function fontColorFromBackground(
 	lightColor = "#FFFFFF",
 	darkColor = "#000000",
 ) {
-	const { red, green, blue } = hexToRGB(bgColor);
+	const { red, green, blue } = hexToRgb(bgColor);
 
 	return red * 0.299 + green * 0.587 + blue * 0.114 > 186 ? darkColor : lightColor;
 }
 
 export function lighten(hex: string, amount: number) {
-	let { red, green, blue } = hexToRGB(hex);
+	let { red, green, blue } = hexToRgb(hex);
 	red += amount;
 	green += amount;
 	blue += amount;
-	return RGBToHex(new RGB(red, green, blue));
+	return rgbToHex(new RGB(red, green, blue));
 }

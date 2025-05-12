@@ -66,7 +66,7 @@ export class ScheduleDay {
 	constructor(
 		public row: ScheduleRow,
 		public day: number,
-		public type: DayType = DayType.empty,
+		public type: DayType = DayType.EMPTY,
 		public shiftStart: number = 0,
 		public shiftDuration = 0,
 	) {
@@ -74,7 +74,7 @@ export class ScheduleDay {
 	}
 
 	public get shiftEnd() {
-		if (this.type != DayType.shift)
+		if (this.type != DayType.SHIFT)
 			throw Error("Az olyan napoknak, amik nem műszakok nincs végső időpontja.");
 
 		const end = (this.shiftStart + this.shiftDuration) % 24;
@@ -82,15 +82,15 @@ export class ScheduleDay {
 	}
 
 	clear() {
-		this.setType(DayType.empty);
+		this.setType(DayType.EMPTY);
 	}
 	setShift(start: number, duration: number) {
-		this.type = DayType.shift;
+		this.type = DayType.SHIFT;
 		this.shiftStart = start;
 		this.shiftDuration = duration;
 	}
 	setType(type: DayType) {
-		if (type != DayType.shift) {
+		if (type != DayType.SHIFT) {
 			this.shiftStart = 0;
 			this.shiftDuration = 0;
 		}

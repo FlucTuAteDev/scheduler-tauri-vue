@@ -22,21 +22,21 @@ describe("Row aggregation", () => {
 		const exampleSheet = new Sheet(2025, 5);
 		const exampleRow = exampleSheet.addRow(new Employee("Joe Example", "test-id"));
 
-		exampleRow.getDay(1).setType(DayType.rest);
-		exampleRow.getDay(2).setType(DayType.weekend);
-		exampleRow.getDay(3).setType(DayType.weekend);
+		exampleRow.getDay(1).setType(DayType.REST);
+		exampleRow.getDay(2).setType(DayType.WEEKEND);
+		exampleRow.getDay(3).setType(DayType.WEEKEND);
 
 		describe("DayTypeCounter class", () => {
 			it("counts single DayTypes", () => {
-				const restCounter = new DayTypeCounter(DayType.rest);
-				const weekendCounter = new DayTypeCounter(DayType.weekend);
+				const restCounter = new DayTypeCounter(DayType.REST);
+				const weekendCounter = new DayTypeCounter(DayType.WEEKEND);
 
 				expect(restCounter.evaluate(exampleRow.days)).toBe(1);
 				expect(weekendCounter.evaluate(exampleRow.days)).toBe(2);
 			});
 
 			it("sums up multiple DayTypes", () => {
-				const combinedCounter = new DayTypeCounter([DayType.rest, DayType.weekend]);
+				const combinedCounter = new DayTypeCounter([DayType.REST, DayType.WEEKEND]);
 				expect(combinedCounter.evaluate(exampleRow.days)).toBe(3);
 			});
 		});

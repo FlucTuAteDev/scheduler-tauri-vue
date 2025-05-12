@@ -123,11 +123,11 @@ export function useSelection(sheet: Reactive<Sheet>, popoverVisible: Ref<boolean
 		popoverVisible.value = true;
 	}
 
-	function setSelection(start: number, end: number, employee_index: number): void {
+	function setSelection(start: number, end: number, employeeIndex: number): void {
 		selection.start = start;
 		selection.end = end;
 
-		selection.employeeIndex = employee_index;
+		selection.employeeIndex = employeeIndex;
 		popoverVisible.value = true;
 	}
 
