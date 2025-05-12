@@ -34,9 +34,7 @@ export class DayTypeCounter implements Aggregate {
 		this.headerColor = headerColor || this.desc.color;
 	}
 	evaluate(row: ScheduleDay[]): number {
-		// console.log("eval")
 		return row.filter(day => this.types.some(type => type == day.type)).length;
-		// return row.filter(d => d.type == this.type).length
 	}
 }
 
@@ -72,16 +70,16 @@ export class ShiftVariety implements Aggregate {
 		public backgroundColor: string,
 	) {}
 	evaluate(row: ScheduleDay[]): boolean {
-		const [normalShiftCount, differentShiftCount] = row.reduce(
-			(acc, curr) => {
-				if (curr.shiftStart === 7) acc[0]++;
-				else if (curr.type === DayType.SHIFT) acc[1]++;
+		const { normalShiftCount, differentShiftCount } = row.reduce(
+			(count, day) => {
+				// TODO: Shouldn't we also check the shift duration?
+				if (day.shiftStart === 7) count.normalShiftCount++;
+				else if (day.type === DayType.SHIFT) count.differentShiftCount++;
 
-				return acc;
+				return count;
 			},
-			[0, 0],
+			{ normalShiftCount: 0, differentShiftCount: 0 },
 		);
-		// console.log(normalShiftCount, differentShiftCount);
 
 		return (differentShiftCount / normalShiftCount) * 100 > ShiftVariety.differencePercentage;
 	}
@@ -97,7 +95,7 @@ class SomeShortShifts implements Aggregate {
 		public backgroundColor: string,
 	) {}
 	evaluate(row: ScheduleDay[]): boolean {
-		return row.filter(d => d.type == DayType.SHIFT && d.shiftDuration <= 8).length > 1;
+		return row.filter(d => d.type == DayType.SHIFT && d.shiftDuration <= 8).length >= 2;
 	}
 }
 
@@ -123,7 +121,6 @@ export class StartTimeCount {
 export function countStartingTimes(sheet: Sheet): Map<number, number[]> {
 	const counter = new Map<number, number[]>();
 
-	//FIXME: there must be an easier way to implement this
 	for (const row of sheet.schedule) {
 		for (let i = 0; i < sheet.monthLength; i++) {
 			const day = row.getDay(i + 1);
@@ -161,11 +158,4 @@ export function hoursBetween(start: number, end: number) {
 	if (start <= end) return range(start, end);
 
 	return range(start, 24 + end).map(hour => hour % 24);
-
-	// Original implementation
-	// const hours = [];
-	// for (let currentHour = start; currentHour !== end; currentHour = (currentHour + 1) % 25)
-	// 	hours.push(currentHour);
-
-	// return hours;
 }
