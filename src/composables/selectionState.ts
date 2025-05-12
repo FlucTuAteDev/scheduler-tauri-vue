@@ -1,5 +1,5 @@
 import { onUnmounted, type Reactive, reactive, type Ref } from "vue";
-import { clamp, range, throttle } from "lodash";
+import { clamp, range, throttle } from "lodash-es";
 import { type ScheduleDay, type Sheet } from "@/model/schedule-sheet";
 
 export class SelectionState {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { capitalize } from "lodash";
+import { capitalize } from "lodash-es";
 import { computed, onMounted, onUnmounted } from "vue";
 import BaseTooltipButton from "./BaseTooltipButton.vue";
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onUnmounted, reactive, ref, useTemplateRef, watch } from "vue";
-import _ from "lodash";
+import { first, last, clamp } from "lodash-es";
 
 const model = defineModel<boolean>();
 
@@ -26,8 +26,8 @@ const targetEndRect = ref(new DOMRect());
 
 let updateRects = () => {
 	if (targets.length === 0) return;
-	targetStartRect.value = _.first(targets)!.getBoundingClientRect();
-	targetEndRect.value = _.last(targets)!.getBoundingClientRect();
+	targetStartRect.value = first(targets)!.getBoundingClientRect();
+	targetEndRect.value = last(targets)!.getBoundingClientRect();
 };
 
 const popoverRef = useTemplateRef("popover"); // Template ref to popover
@@ -56,7 +56,7 @@ let x = computed(() => {
 		res = left + (right - left - popoverWidth.value) / 2 + offset.x;
 	}
 
-	return _.clamp(res, margin, maxLeft);
+	return clamp(res, margin, maxLeft);
 });
 
 let y = computed(() => {
@@ -73,7 +73,7 @@ let y = computed(() => {
 		else res = bottom + offset.y;
 	}
 
-	return _.clamp(res, margin, maxTop);
+	return clamp(res, margin, maxTop);
 });
 
 // Save the position of the popover on the first change of absolute
