@@ -11,7 +11,8 @@
 		"tauri": "tauri",
 		"tauri-nvidia": "WEBKIT_DISABLE_DMABUF_RENDERER=1 tauri",
 		"test": "wdio run ./wdio.conf.ts",
-		"test-serve": "yarn test; allure serve --port 45415"
+		"build-test": "yarn tauri build --no-bundle && yarn test",
+		"allure-serve": "allure serve --port 45415"
 	},
 	"dependencies": {
 		"@tauri-apps/api": "^2.5.0",

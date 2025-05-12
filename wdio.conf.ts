@@ -1,6 +1,6 @@
 import os from "os";
 import path from "path";
-import { type ChildProcessByStdio, spawn, spawnSync } from "child_process";
+import { type ChildProcessByStdio, spawn } from "child_process";
 import type Stream from "stream";
 // @ts-expect-error There are no type declarations
 import allure from "allure-commandline";
@@ -163,11 +163,7 @@ export const config: WebdriverIO.Config = {
 	 * @param {object} config wdio configuration object
 	 * @param {Array.<Object>} capabilities list of capabilities details
 	 */
-	onPrepare: function () {
-		if (process.argv.includes("--no-build")) return;
-
-		spawnSync("yarn", ["tauri", "build", "--no-bundle"]);
-	},
+	// onPrepare: function () {},
 	/**
 	 * Gets executed before a worker process is spawned and can be used to initialize specific service
 	 * for that worker as well as modify runtime environments in an async fashion.
