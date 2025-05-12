@@ -34,10 +34,8 @@ const employeeName = computed(() => props.row.employee.name);
 
 const accumulatorValues = computed(() => props.aggregates.map(a => a.evaluate(days.value)));
 const counterStyles = computed(() =>
-	props.aggregates.map((aggregate, index) => ({
+	props.aggregates.map(aggregate => ({
 		backgroundColor: aggregate.backgroundColor,
-		//FIXME: this calculation is duplicated (and brittle)
-		right: (props.aggregates.length - 1 - index) * 3 + "em", //right side sticky columns
 	})),
 );
 </script>

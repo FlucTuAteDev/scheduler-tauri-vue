@@ -104,11 +104,9 @@ const aggregateHeaders = computed((): string[] => {
 
 //Having this as computed so it's cached and doesn't run on every render
 const headerStyles = computed(() => {
-	return accumulators.map((a, i) => ({
+	return accumulators.map(a => ({
 		backgroundColor: a.headerColor,
 		color: fontColorFromBackground(a.headerColor),
-		//FIXME: can we find a way to avoid hardcoding the width here?
-		right: (accumulators.length - 1 - i) * 3 + "em", //right side sticky columns
 	}));
 });
 </script>
@@ -197,13 +195,10 @@ const headerStyles = computed(() => {
 				</tr>
 			</thead>
 			<tbody>
-				<!-- :selection="i == drag.employee_index ? selection : []"
-				:error_groups="error_groups[i]"
-				@day-mouse-down="dragStart(i, $event)"
-				@day-mouse-up="dragEnd(i, $event)"
-				@day-mouse-enter="dragEnter(i, $event)"
-				@employee-contextmenu="employeeContextMenu($event, row.employee)"
-				v-bind="{ row, aggregates }" -->
+				<!--
+					:error_groups="error_groups[i]"
+					@employee-contextmenu="employeeContextMenu($event, row.employee)"
+				-->
 				<monthly-row
 					v-for="(row, i) in sheet.schedule"
 					:key="row.employee.id"
@@ -302,6 +297,13 @@ const headerStyles = computed(() => {
 		left: 0;
 		background: #fff;
 		border: 1px solid #ccc;
+	}
+
+	@for $i from 1 through 10 {
+		.sticky-right:nth-last-of-type(#{$i}),
+		.header-sticky-right:nth-last-of-type(#{$i}) {
+			right: ($i - 1) * 3em;
+		}
 	}
 }
 </style>
