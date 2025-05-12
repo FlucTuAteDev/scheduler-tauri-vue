@@ -1,13 +1,6 @@
+import { Employee } from "@/model/staff";
 import { defineStore } from "pinia";
 import { type Reactive, reactive } from "vue";
-
-export class Employee {
-	constructor(
-		public name: string,
-		public id: string,
-		public tags: string[] = [],
-	) {}
-}
 
 export const useStaffState = defineStore("staff", () => {
 	const employees: Reactive<Map<string, Employee>> = reactive(new Map());
