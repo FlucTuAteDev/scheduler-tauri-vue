@@ -9,7 +9,6 @@
 		"build": "vue-tsc --noEmit && vite build",
 		"preview": "vite preview",
 		"tauri": "tauri",
-		"tauri-nvidia": "WEBKIT_DISABLE_DMABUF_RENDERER=1 tauri",
 		"test": "wdio run ./wdio.conf.ts",
 		"build-test": "yarn tauri build --no-bundle && yarn test",
 		"allure-serve": "allure serve --port 45415"

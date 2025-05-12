@@ -30,7 +30,7 @@ const classes = computed(() => {
 });
 
 const typeString = computed(() => {
-	return Object.entries(DayType)[scheduleDay.type][1] as string;
+	return (Object.entries(DayType)[scheduleDay.type][1] as string).toLowerCase();
 });
 
 const style = computed(() => {

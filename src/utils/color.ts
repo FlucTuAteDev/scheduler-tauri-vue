@@ -26,8 +26,8 @@ export function rgbToHex(color: RGB) {
 //Based on https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
 export function fontColorFromBackground(
 	bgColor: string,
-	lightColor = "#FFFFFF",
-	darkColor = "#000000",
+	lightColor = "white",
+	darkColor = "black",
 ) {
 	const { red, green, blue } = hexToRgb(bgColor);
 
